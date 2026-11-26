@@ -1,4 +1,4 @@
-
+%%writefile /content/github_deploy/app.py
 import json
 import urllib.request
 import urllib.parse
@@ -41,9 +41,9 @@ TEXT = {
         "analyse": "📊  |  Analyse Plant  ➔",
         "upload_first": "Please upload or capture a plant photo first.",
         "running": "🌿 Analysing plant across 1,600 species...",
-        "fetching": "🧪 Retrieving chemical compounds from PubChem...",
+        "fetching": "🧪 Retrieving chemical compounds & reference photos...",
         "top5_title": "🎯 Top 5 Predicted Species (Custom Model)",
-        "ref_gallery": "🖼️ Reference Images from Database",
+        "ref_gallery": "🖼️ Reference Images from iNaturalist",
         "plant_id": "Plant Identification",
         "scientific": "Scientific Name",
         "common": "Common Name",
@@ -91,9 +91,9 @@ TEXT = {
         "analyse": "📊  |  Analyser la plante  ➔",
         "upload_first": "Veuillez importer ou prendre une photo d’une plante.",
         "running": "🌿 Analyse parmi 1 600 espèces...",
-        "fetching": "🧪 Récupération des composés chimiques (PubChem)...",
+        "fetching": "🧪 Récupération des composés chimiques et photos de référence...",
         "top5_title": "🎯 Top 5 des espèces prédites (Modèle personnalisé)",
-        "ref_gallery": "🖼️ Images de référence de la base de données",
+        "ref_gallery": "🖼️ Images de référence (iNaturalist)",
         "plant_id": "Identification de la plante",
         "scientific": "Nom scientifique",
         "common": "Nom commun",
@@ -141,9 +141,9 @@ TEXT = {
         "analyse": "📊  |  تحليل النبتة  ➔",
         "upload_first": "يرجى رفع صورة النبتة أو التقاطها أولاً.",
         "running": "🌿 جارٍ تحليل النبتة ومقارنتها بـ 1,600 نوع...",
-        "fetching": "🧪 جارٍ جلب المركبات الكيميائية من PubChem...",
+        "fetching": "🧪 جارٍ جلب المركبات الكيميائية والصور المرجعية...",
         "top5_title": "🎯 أكثر 5 أنواع متوقعة (نموذجك المدرَّب)",
-        "ref_gallery": "🖼️ صور مرجعية حقيقية من قاعدة البيانات",
+        "ref_gallery": "🖼️ صور مرجعية للمقارنة البصرية (iNaturalist)",
         "plant_id": "بطاقة هوية النبتة",
         "scientific": "الاسم العلمي",
         "common": "الاسم الشائع",
@@ -605,6 +605,23 @@ def load_assets():
 
 model_1600, all_species, species_lookup, ref_urls_map = load_assets()
 
+@st.cache_data(ttl=86400, show_spinner=False)
+def get_reference_photo_url(scientific_name: str):
+    if scientific_name in ref_urls_map and ref_urls_map[scientific_name]:
+        return ref_urls_map[scientific_name]
+    try:
+        q = urllib.parse.quote(scientific_name)
+        url = f"https://api.inaturalist.org/v1/taxa?q={q}&per_page=1"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        results = data.get("results", [])
+        if results and results[0].get("default_photo"):
+            return results[0]["default_photo"].get("medium_url", "")
+    except Exception:
+        pass
+    return ""
+
 def predict_top5(img: Image.Image):
     img_orig = img.convert("RGB").resize((192, 192))
     img_flip = ImageOps.mirror(img_orig)
@@ -698,7 +715,7 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     with urllib.request.urlopen(req2) as r:
         return json.loads(r.read())["html_url"]
 
-for k in ("top5", "feedback_sent", "img_bytes", "chemicals"):
+for k in ("top5", "feedback_sent", "img_bytes", "chemicals", "ref_photos"):
     if k not in st.session_state:
         st.session_state[k] = None
 
@@ -758,6 +775,10 @@ with col_input:
 
             with st.spinner(tr("fetching")):
                 st.session_state.chemicals = get_chemical_compounds(top5[0][0])
+                st.session_state.ref_photos = [
+                    (sp_name, prob, get_reference_photo_url(sp_name))
+                    for sp_name, prob in top5[:3]
+                ]
 
 with col_results:
     if st.session_state.top5 is not None:
@@ -765,45 +786,43 @@ with col_results:
         best_sp, best_prob = top5[0]
         info = species_lookup.get(best_sp, {})
 
-        bars_html = ""
+        bars_parts = []
         for idx, (sp_name, prob) in enumerate(top5):
             fill_cls = "bar-fill-top" if idx == 0 else "bar-fill-sub"
             width_pct = max(prob * 100.0, 2.0)
-            bars_html += f"""
-            <div class="bar-wrap">
-              <div class="bar-header">
-                <span dir="ltr"><i>{html.escape(sp_name)}</i></span>
-                <span dir="ltr" style="color:#4ade80;">{prob*100:.1f}%</span>
-              </div>
-              <div class="bar-track">
-                <div class="{fill_cls}" style="width:{width_pct:.1f}%"></div>
-              </div>
-            </div>
-            """
-
-        st.markdown(f"""
-        <div class="model-card-primary" dir="{page_dir}">
-          <div style="font-size:1.15rem;font-weight:800;color:#ecfdf5;margin-bottom:12px;">{tr("top5_title")}</div>
-          {bars_html}
-        </div>
-        """, unsafe_allow_html=True)
+            bars_parts.append(
+                f'<div class="bar-wrap">'
+                f'<div class="bar-header"><span dir="ltr"><i>{html.escape(sp_name)}</i></span><span dir="ltr" style="color:#4ade80;">{prob*100:.1f}%</span></div>'
+                f'<div class="bar-track"><div class="{fill_cls}" style="width:{width_pct:.1f}%"></div></div>'
+                f'</div>'
+            )
 
         st.markdown(
-            f'<div dir="{page_dir}" class="plant-section-heading">'
-            f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
+            f'<div class="model-card-primary" dir="{page_dir}">'
+            f'<div style="font-size:1.15rem;font-weight:800;color:#ecfdf5;margin-bottom:12px;">{tr("top5_title")}</div>'
+            f'{"".join(bars_parts)}'
+            f'</div>',
             unsafe_allow_html=True,
         )
-        ref_cols = st.columns(3, gap="medium")
-        for idx, (sp_name, prob) in enumerate(top5[:3]):
-            ref_url = ref_urls_map.get(sp_name, "")
-            with ref_cols[idx]:
-                if ref_url:
-                    st.markdown(f"""
-                    <div class="ref-card">
-                      <img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>
-                      <div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+
+        ref_photos = st.session_state.ref_photos or []
+        valid_refs = [r for r in ref_photos if r[2]]
+        if valid_refs:
+            st.markdown(
+                f'<div dir="{page_dir}" class="plant-section-heading">'
+                f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
+                unsafe_allow_html=True,
+            )
+            ref_cols = st.columns(len(valid_refs), gap="medium")
+            for idx, (sp_name, prob, ref_url) in enumerate(valid_refs):
+                with ref_cols[idx]:
+                    st.markdown(
+                        f'<div class="ref-card">'
+                        f'<img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>'
+                        f'<div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
 
         sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
         sahara_toxic = bool(info.get("is_toxic_morocco_study", False))
@@ -822,12 +841,13 @@ with col_results:
 
         if toxic_msgs:
             joined_tox = "<br>".join(html.escape(m) for m in toxic_msgs)
-            st.markdown(f"""
-            <div class="toxic-alert-box" dir="{page_dir}">
-              <div style="font-weight:800;font-size:1.02rem;margin-bottom:6px;">{tr("toxic_banner")}</div>
-              <div style="font-size:0.93rem;line-height:1.65;">{joined_tox}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="toxic-alert-box" dir="{page_dir}">'
+                f'<div style="font-weight:800;font-size:1.02rem;margin-bottom:6px;">{tr("toxic_banner")}</div>'
+                f'<div style="font-size:0.93rem;line-height:1.65;">{joined_tox}</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
         else:
             st.markdown(f'<div class="safe-alert-box" dir="{page_dir}">{tr("safe_banner")}</div>', unsafe_allow_html=True)
 
@@ -970,12 +990,13 @@ with col_results:
                 unsafe_allow_html=True,
             )
 
-        st.markdown(f"""
-        <div class="feedback-box" dir="{page_dir}">
-          <div style="font-size:1.05rem;font-weight:700;color:#4ade80;margin-bottom:4px;">{tr('evaluate')}</div>
-          <div style="font-size:0.92rem;color:#cbd5e1;">{tr('evaluate_help')}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="feedback-box" dir="{page_dir}">'
+            f'<div style="font-size:1.05rem;font-weight:700;color:#4ade80;margin-bottom:4px;">{tr("evaluate")}</div>'
+            f'<div style="font-size:0.92rem;color:#cbd5e1;">{tr("evaluate_help")}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
         st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
 
         if not st.session_state.feedback_sent:
@@ -1007,19 +1028,22 @@ with col_results:
         elif st.session_state.feedback_sent == "done":
             st.success(tr("saved"))
     else:
-        st.markdown(f"""
-        <div dir="{page_dir}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;
-                    height:380px;background:rgba(30,41,59,0.3);border:1px dashed rgba(255,255,255,0.15);
-                    border-radius:22px;color:#94a3b8;text-align:center;padding:20px;">
-          <div style="font-size:2.8rem;margin-bottom:12px;">🌱</div>
-          <div style="font-size:1.15rem;font-weight:700;color:#e2e8f0;">{tr("ready")}</div>
-          <div style="font-size:0.95rem;margin-top:6px;">{tr("ready_help")}</div>
-        </div>""", unsafe_allow_html=True)
+        st.markdown(
+            f'<div dir="{page_dir}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;'
+            f'height:380px;background:rgba(30,41,59,0.3);border:1px dashed rgba(255,255,255,0.15);'
+            f'border-radius:22px;color:#94a3b8;text-align:center;padding:20px;">'
+            f'<div style="font-size:2.8rem;margin-bottom:12px;">🌱</div>'
+            f'<div style="font-size:1.15rem;font-weight:700;color:#e2e8f0;">{tr("ready")}</div>'
+            f'<div style="font-size:0.95rem;margin-top:6px;">{tr("ready_help")}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
-st.markdown(f"""
-<div dir="{page_dir}" style="text-align:center;font-size:.85rem;color:#94a3b8;margin-top:40px;
-            border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">
-  {tr("academic")}<br>
-  <b>Hamza Oulbayyad</b> • {tr("dataset")} • <b>Version 2.0 (1,600 Species)</b>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    f'<div dir="{page_dir}" style="text-align:center;font-size:.85rem;color:#94a3b8;margin-top:40px;'
+    f'border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">'
+    f'{tr("academic")}<br>'
+    f'<b>Hamza Oulbayyad</b> • {tr("dataset")} • <b>Version 2.0 (1,600 Species)</b>'
+    f'</div>',
+    unsafe_allow_html=True,
+)
