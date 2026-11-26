@@ -3,7 +3,6 @@ import urllib.request
 import urllib.parse
 import html
 import base64
-import os
 import io as _io
 import time
 from pathlib import Path
@@ -15,7 +14,7 @@ import tensorflow as tf
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 st.set_page_config(
-    page_title="Medicinal Plant Classifier 1600 — Hamza Oulbayyad",
+    page_title="Medicinal Plant Classifier — 1,600 Species",
     page_icon="🌿",
     layout="wide"
 )
@@ -28,9 +27,9 @@ LANGUAGES = {
 
 TEXT = {
     "en": {
-        "hero": "Medicinal Plant Classifier (1,600 Species)",
-        "subtitle": "End-to-end Deep Learning botanical identification & Moroccan ethnobotany — powered by <b>Custom MobileNetV2 (1,600 Classes)</b>",
-        "developed": "✨ Developed by:",
+        "hero": "Medicinal Plant Classifier",
+        "subtitle": "Deep learning botanical identification & Moroccan ethnobotany — powered by <b>1,600-Species AI</b>",
+        "badge_info": "🔬 1,600 Species &bull; PFAF &bull; Moroccan Ethnobotany &bull; PubChem",
         "input": "📸 Input Plant Image",
         "upload_tab": "📁 Upload File",
         "camera_tab": "📷 Take Photo",
@@ -41,12 +40,13 @@ TEXT = {
         "upload_first": "Please upload or capture a plant photo first.",
         "running": "🌿 Analysing plant across 1,600 species...",
         "fetching": "🧪 Retrieving chemical compounds & reference photos...",
-        "top5_title": "🎯 Top 5 Predicted Species (Custom Model)",
-        "ref_gallery": "🖼️ Reference Images from iNaturalist",
+        "top5_title": "🎯 Top 5 Predicted Species",
+        "ref_gallery": "🖼️ Visual Reference Comparison (iNaturalist)",
         "plant_id": "Plant Identification",
         "scientific": "Scientific Name",
         "common": "Common Name",
         "vernacular": "🇲🇦 Moroccan Vernacular",
+        "confidence": "Top-1 Confidence",
         "plant_info": "Botanical & Medicinal Profile (PFAF)",
         "family": "🌱 Family",
         "med_rating": "⭐ Medicinal Rating (0–5)",
@@ -78,9 +78,9 @@ TEXT = {
         "dataset": "Database: 1,600 Species • 73,998 Images (iNaturalist + PFAF + Moroccan Studies)"
     },
     "fr": {
-        "hero": "Classificateur de Plantes Médicinales (1 600 Espèces)",
-        "subtitle": "Identification botanique par Deep Learning & ethnobotanique marocaine — propulsé par <b>MobileNetV2 (1 600 Classes)</b>",
-        "developed": "✨ Développé par :",
+        "hero": "Classificateur de Plantes Médicinales",
+        "subtitle": "Identification botanique par Deep Learning & ethnobotanique marocaine — propulsé par <b>IA 1 600 Espèces</b>",
+        "badge_info": "🔬 1 600 Espèces &bull; PFAF &bull; Ethnobotanique Marocaine &bull; PubChem",
         "input": "📸 Image de la plante",
         "upload_tab": "📁 Importer un fichier",
         "camera_tab": "📷 Prendre une photo",
@@ -91,12 +91,13 @@ TEXT = {
         "upload_first": "Veuillez importer ou prendre une photo d’une plante.",
         "running": "🌿 Analyse parmi 1 600 espèces...",
         "fetching": "🧪 Récupération des composés chimiques et photos de référence...",
-        "top5_title": "🎯 Top 5 des espèces prédites (Modèle personnalisé)",
-        "ref_gallery": "🖼️ Images de référence (iNaturalist)",
+        "top5_title": "🎯 Top 5 des espèces prédites",
+        "ref_gallery": "🖼️ Comparaison visuelle (iNaturalist)",
         "plant_id": "Identification de la plante",
         "scientific": "Nom scientifique",
         "common": "Nom commun",
         "vernacular": "🇲🇦 Nom vernaculaire marocain",
+        "confidence": "Confiance Top-1",
         "plant_info": "Profil botanique et médicinal (PFAF)",
         "family": "🌱 Famille",
         "med_rating": "⭐ Note médicinale (0–5)",
@@ -128,9 +129,9 @@ TEXT = {
         "dataset": "Base de données : 1 600 Espèces • 73 998 Images (iNaturalist + PFAF + Études Marocaines)"
     },
     "ar": {
-        "hero": "نظام التعرّف الذكي على النباتات الطبية (1,600 نوع)",
-        "subtitle": "التعرّف على النباتات بالتعلم العميق والسياق الإثنوبوتاني المغربي — مدعوم بنموذج <b>MobileNetV2 (1,600 فئة)</b>",
-        "developed": "✨ تطوير:",
+        "hero": "نظام التعرّف على النباتات الطبية",
+        "subtitle": "تصنيف النباتات بالتعلم العميق والسياق الإثنوبوتاني المغربي — مدعوم بنموذج <b>1,600 نوع نباتي</b>",
+        "badge_info": "🔬 1,600 نوع &bull; PFAF &bull; الإثنوبوتانيا المغربية &bull; PubChem",
         "input": "📸 صورة النبتة",
         "upload_tab": "📁 رفع ملف",
         "camera_tab": "📷 التقاط صورة",
@@ -141,12 +142,13 @@ TEXT = {
         "upload_first": "يرجى رفع صورة النبتة أو التقاطها أولاً.",
         "running": "🌿 جارٍ تحليل النبتة ومقارنتها بـ 1,600 نوع...",
         "fetching": "🧪 جارٍ جلب المركبات الكيميائية والصور المرجعية...",
-        "top5_title": "🎯 أكثر 5 أنواع متوقعة (نموذجك المدرَّب)",
+        "top5_title": "🎯 أكثر 5 أنواع متوقعة",
         "ref_gallery": "🖼️ صور مرجعية للمقارنة البصرية (iNaturalist)",
         "plant_id": "بطاقة هوية النبتة",
         "scientific": "الاسم العلمي",
         "common": "الاسم الشائع",
         "vernacular": "🇲🇦 الاسم بالدارجة المغربية",
+        "confidence": "نسبة ثقة التعرف",
         "plant_info": "الملف النباتي والطبي (PFAF)",
         "family": "🌱 العائلة النباتية",
         "med_rating": "⭐ التقييم الطبي (0–5)",
@@ -193,75 +195,106 @@ st.markdown("""
       padding-top: 2.0rem !important;
   }
   .stApp {
-      background: radial-gradient(circle at 50% -10%, #064e3b 0%, #0f172a 55%, #020617 100%);
+      background: radial-gradient(circle at 50% -15%, #063729 0%, #0b1324 45%, #030712 100%);
       color: #f8fafc;
   }
   .top-lang-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(6, 78, 59, 0.45);
-      border: 1px solid rgba(74, 222, 128, 0.3);
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(52, 211, 153, 0.32);
       border-radius: 999px;
       padding: 7px 16px;
       font-size: 0.82rem;
       font-weight: 700;
-      color: #a7f3d0;
+      color: #cbd5e1;
       backdrop-filter: blur(10px);
       margin-top: 4px;
+      transition: all 0.25s ease;
+  }
+  .top-lang-badge:hover {
+      border-color: #34d399;
+      color: #ffffff;
+      transform: translateY(-1px);
   }
   div[data-testid="stSelectbox"] > label {
       display: none !important;
   }
   div[data-testid="stSelectbox"] > div > div {
-      background: linear-gradient(135deg, rgba(6, 78, 59, 0.65), rgba(15, 23, 42, 0.85)) !important;
-      border: 1px solid rgba(74, 222, 128, 0.42) !important;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.88)) !important;
+      border: 1px solid rgba(52, 211, 153, 0.35) !important;
       border-radius: 14px !important;
       color: #f8fafc !important;
       font-weight: 700 !important;
       backdrop-filter: blur(12px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s ease !important;
+      cursor: pointer !important;
   }
   div[data-testid="stSelectbox"] > div > div:hover {
       border-color: #4ade80 !important;
-      box-shadow: 0 0 16px rgba(74, 222, 128, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 0 18px rgba(74, 222, 128, 0.28);
   }
   div[data-testid="stSelectbox"] svg {
       fill: #4ade80 !important;
   }
   .hero-box {
-      background: linear-gradient(135deg, rgba(6, 78, 59, 0.85), rgba(22, 163, 74, 0.75), rgba(16, 185, 129, 0.65));
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(74, 222, 128, 0.35);
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.85), rgba(15, 118, 110, 0.75), rgba(15, 23, 42, 0.92));
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(74, 222, 128, 0.32);
       border-radius: 26px;
-      padding: 30px 24px;
+      padding: 28px 24px;
       text-align: center;
       color: white;
       margin-top: 8px;
       margin-bottom: 26px;
-      box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.35);
+      box-shadow: 0 20px 45px -15px rgba(16, 185, 129, 0.28);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .hero-box:hover {
+      border-color: rgba(74, 222, 128, 0.55);
   }
   .hero-badge {
       display: inline-block;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(15, 23, 42, 0.45);
       backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       border-radius: 999px;
-      padding: 7px 22px;
-      font-size: 0.92rem;
-      color: #ffffff;
+      padding: 6px 20px;
+      font-size: 0.88rem;
+      color: #e2e8f0;
       margin-top: 10px;
   }
   .model-card-primary {
-      background: linear-gradient(180deg, rgba(6, 78, 59, 0.45) 0%, rgba(15, 23, 42, 0.82) 100%);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(17, 24, 39, 0.95) 100%);
       backdrop-filter: blur(12px);
-      border: 1.5px solid #4ade80;
+      border: 1.5px solid rgba(74, 222, 128, 0.45);
       border-radius: 22px;
       padding: 22px 22px;
-      box-shadow: 0 10px 30px -10px rgba(74, 222, 128, 0.25);
+      box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.45);
       margin-bottom: 18px;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, box-shadow 0.25s ease;
   }
-  .bar-wrap { margin: 10px 0 12px 0; }
+  .model-card-primary:hover {
+      transform: translateY(-3px);
+      border-color: #4ade80;
+      box-shadow: 0 16px 38px -8px rgba(74, 222, 128, 0.22);
+  }
+  .bar-wrap {
+      margin: 8px 0 10px 0;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.22s ease;
+  }
+  .bar-wrap:hover {
+      background: rgba(30, 41, 59, 0.82);
+      border-color: rgba(74, 222, 128, 0.35);
+      transform: translateX(4px);
+  }
   .bar-header {
       display: flex;
       justify-content: space-between;
@@ -272,23 +305,23 @@ st.markdown("""
       color: #f8fafc;
   }
   .bar-track {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(2, 6, 23, 0.85);
       border-radius: 999px;
-      height: 18px;
+      height: 16px;
       width: 100%;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 2px;
   }
   .bar-fill-top {
-      height: 12px;
+      height: 10px;
       border-radius: 999px;
-      background: linear-gradient(90deg, #15803d, #22c55e, #4ade80);
+      background: linear-gradient(90deg, #16a34a, #22c55e, #4ade80);
   }
   .bar-fill-sub {
-      height: 12px;
+      height: 10px;
       border-radius: 999px;
-      background: linear-gradient(90deg, #0f766e, #14b8a6, #2dd4bf);
+      background: linear-gradient(90deg, #0284c7, #0d9488, #2dd4bf);
   }
   .toxic-alert-box {
       background: linear-gradient(135deg, rgba(127, 29, 29, 0.85), rgba(153, 27, 27, 0.65));
@@ -298,40 +331,71 @@ st.markdown("""
       margin: 14px 0;
       color: #fef2f2;
       box-shadow: 0 10px 26px rgba(220, 38, 38, 0.25);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .toxic-alert-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(220, 38, 38, 0.38);
   }
   .safe-alert-box {
-      background: linear-gradient(135deg, rgba(6, 78, 59, 0.65), rgba(20, 83, 45, 0.55));
-      border: 1px solid rgba(74, 222, 128, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(52, 211, 153, 0.35);
       border-radius: 16px;
       padding: 13px 18px;
       margin: 14px 0;
-      color: #dcfce7;
+      color: #a7f3d0;
       font-weight: 600;
+      transition: all 0.25s ease;
+  }
+  .safe-alert-box:hover {
+      border-color: #4ade80;
+      transform: translateY(-2px);
   }
   .feedback-box {
-      background: rgba(30, 41, 59, 0.6);
-      border: 1px solid rgba(74, 222, 128, 0.25);
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.22);
       border-radius: 18px;
       padding: 18px 22px;
       margin-top: 16px;
+      transition: border-color 0.25s ease;
   }
+  .feedback-box:hover {
+      border-color: rgba(74, 222, 128, 0.45);
+  }
+
+  /* Interactive Tactile Buttons */
   .stButton>button {
       border-radius: 14px !important;
       font-weight: 700 !important;
-      background: rgba(30, 41, 59, 0.8) !important;
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      background: rgba(30, 41, 59, 0.88) !important;
+      border: 1px solid rgba(148, 163, 184, 0.25) !important;
       color: #ffffff !important;
-      padding: 10px 18px !important;
+      padding: 11px 18px !important;
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, background 0.22s ease, border-color 0.22s ease !important;
       width: 100% !important;
+      cursor: pointer !important;
   }
   .stButton>button:hover {
       background: linear-gradient(135deg, #16a34a, #15803d) !important;
       border-color: #4ade80 !important;
+      transform: translateY(-3px) !important;
+      box-shadow: 0 12px 24px -4px rgba(34, 197, 94, 0.48) !important;
   }
+  .stButton>button:active {
+      transform: translateY(1px) scale(0.98) !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+  }
+
   .st-key-wrong_btn_trigger button:hover {
       background: linear-gradient(135deg, #dc2626, #991b1b) !important;
       border-color: #f87171 !important;
+      transform: translateY(-3px) !important;
+      box-shadow: 0 12px 24px -4px rgba(220, 38, 38, 0.55) !important;
   }
+  .st-key-wrong_btn_trigger button:active {
+      transform: translateY(1px) scale(0.98) !important;
+  }
+
   .st-key-analyse_btn button {
       background: linear-gradient(90deg, #16a34a 0%, #22c55e 50%, #10b981 100%) !important;
       border: 1.5px solid #4ade80 !important;
@@ -341,13 +405,44 @@ st.markdown("""
       font-weight: 800 !important;
       padding: 14px 24px !important;
       box-shadow: 0 8px 25px -4px rgba(34, 197, 94, 0.55) !important;
+      letter-spacing: 0.3px !important;
   }
+  .st-key-analyse_btn button:hover {
+      background: linear-gradient(90deg, #15803d 0%, #16a34a 50%, #059669 100%) !important;
+      box-shadow: 0 14px 34px -2px rgba(74, 222, 128, 0.78) !important;
+      transform: translateY(-3px) !important;
+  }
+  .st-key-analyse_btn button:active {
+      transform: translateY(2px) scale(0.97) !important;
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4) !important;
+  }
+
   [data-testid="stFileUploader"] section {
-      background: rgba(15, 23, 42, 0.65) !important;
-      border: 1.5px dashed rgba(148, 163, 184, 0.4) !important;
+      background: rgba(15, 23, 42, 0.75) !important;
+      border: 1.5px dashed rgba(148, 163, 184, 0.35) !important;
       border-radius: 20px !important;
       padding: 16px !important;
+      transition: all 0.25s ease !important;
   }
+  [data-testid="stFileUploader"] section:hover {
+      border-color: #4ade80 !important;
+      background: rgba(30, 41, 59, 0.65) !important;
+      transform: translateY(-2px);
+  }
+  [data-testid="stFileUploader"] section button {
+      background: rgba(30, 41, 59, 0.95) !important;
+      border: 1px solid rgba(74, 222, 128, 0.4) !important;
+      border-radius: 12px !important;
+      color: #4ade80 !important;
+      font-weight: 700 !important;
+      transition: all 0.2s ease !important;
+  }
+  [data-testid="stFileUploader"] section button:hover {
+      background: #16a34a !important;
+      color: #ffffff !important;
+      transform: translateY(-2px);
+  }
+
   .preview-wrapper {
       position: relative;
       background: #ffffff;
@@ -358,6 +453,11 @@ st.markdown("""
       box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.6);
       border: 2px solid rgba(74, 222, 128, 0.35);
       overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .preview-wrapper:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 38px -6px rgba(74, 222, 128, 0.25);
   }
   .preview-wrapper img {
       width: 100%;
@@ -377,27 +477,9 @@ st.markdown("""
       padding: 5px 14px;
       font-size: 0.8rem;
       font-weight: 800;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
-  .ref-card {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(74, 222, 128, 0.35);
-      border-radius: 18px;
-      padding: 10px;
-      text-align: center;
-      margin-bottom: 10px;
-  }
-  .ref-card img {
-      width: 100%;
-      height: 175px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-bottom: 8px;
-  }
-  .ref-caption {
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: #a7f3d0;
-  }
+
   .stTabs [data-baseweb="tab-list"] {
       gap: 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -410,49 +492,66 @@ st.markdown("""
       padding: 8px 20px;
       color: #cbd5e1;
       font-weight: 600;
+      transition: all 0.2s ease !important;
+  }
+  .stTabs [data-baseweb="tab"]:hover {
+      border-color: rgba(74, 222, 128, 0.5) !important;
+      color: #ffffff !important;
+      transform: translateY(-2px);
   }
   .stTabs [aria-selected="true"] {
-      background: linear-gradient(135deg, rgba(22, 163, 74, 0.35), rgba(6, 78, 59, 0.6)) !important;
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.35), rgba(15, 23, 42, 0.85)) !important;
       border-color: #4ade80 !important;
       color: #ffffff !important;
   }
+
+  /* Refined Slate-Glass Section Headings & Interactive Cards */
   .plant-section-heading {
       display: flex;
       align-items: center;
       gap: 11px;
-      margin: 18px 0 12px 0;
-      padding: 11px 16px;
+      margin: 20px 0 12px 0;
+      padding: 12px 16px;
       border-radius: 15px;
-      background: linear-gradient(100deg, rgba(6, 78, 59, .62), rgba(30, 41, 59, .52));
-      border: 1px solid rgba(74, 222, 128, .28);
-      color: #ecfdf5;
-      font-size: 1.05rem;
+      background: linear-gradient(100deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.78));
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+      color: #f8fafc;
+      font-size: 1.06rem;
       font-weight: 800;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .plant-section-heading:hover {
+      border-color: rgba(74, 222, 128, 0.45);
+      transform: translateY(-1px);
   }
   .plant-section-heading .section-mark {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: 10px;
-      background: rgba(74, 222, 128, .16);
-      border: 1px solid rgba(74, 222, 128, .32);
-      color: #86efac;
-      flex: 0 0 30px;
+      background: rgba(52, 211, 153, 0.14);
+      border: 1px solid rgba(52, 211, 153, 0.32);
+      color: #6ee7b7;
+      flex: 0 0 32px;
   }
+
   .plant-info-card {
       position: relative;
-      min-height: 88px;
+      min-height: 90px;
       height: calc(100% - 10px);
-      background: linear-gradient(135deg, rgba(6, 78, 59, .88) 0%, rgba(13, 90, 82, .84) 52%, rgba(20, 48, 62, .92) 100%);
-      border: 1px solid rgba(74, 222, 128, .38);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.84) 60%, rgba(17, 24, 39, 0.96) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.22);
       border-radius: 17px;
-      padding: 15px 18px 16px 20px;
+      padding: 16px 19px 17px 21px;
       margin: 6px 0 12px 0;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, .24);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(14px);
       overflow: hidden;
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+      cursor: default;
   }
   .plant-info-card::before {
       content: "";
@@ -460,46 +559,71 @@ st.markdown("""
       top: 12px;
       bottom: 12px;
       left: 0;
-      width: 3.5px;
+      width: 4px;
       border-radius: 0 5px 5px 0;
       background: linear-gradient(180deg, #4ade80, #0d9488);
+      transition: width 0.2s ease, background 0.2s ease;
+  }
+  .plant-info-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(74, 222, 128, 0.65);
+      background: linear-gradient(145deg, rgba(20, 35, 55, 0.96) 0%, rgba(15, 65, 55, 0.72) 100%);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.38), 0 0 22px rgba(52, 211, 153, 0.16);
+  }
+  .plant-info-card:hover::before {
+      width: 5px;
+      background: linear-gradient(180deg, #86efac, #2dd4bf);
   }
   .plant-info-title {
       display: block;
-      font-size: .78rem;
-      color: #a7f3d0;
+      font-size: .79rem;
+      color: #6ee7b7;
       font-weight: 800;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
       letter-spacing: .03em;
   }
   .plant-info-value {
-      font-size: .96rem;
-      line-height: 1.7;
-      color: #ffffff;
+      font-size: .97rem;
+      line-height: 1.72;
+      color: #f1f5f9;
       overflow-wrap: anywhere;
       white-space: pre-wrap;
   }
+
   .chemical-panel {
-      background: linear-gradient(145deg, rgba(6, 78, 59, .3), rgba(15, 23, 42, .65));
-      border: 1px solid rgba(74, 222, 128, .26);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.78));
+      border: 1px solid rgba(148, 163, 184, 0.24);
       border-radius: 18px;
       padding: 15px 17px;
       margin: 8px 0 16px 0;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .chemical-panel:hover {
+      border-color: rgba(74, 222, 128, 0.5);
+      transform: translateY(-2px);
   }
   .chemical-pill {
       display: inline-block;
       direction: ltr;
-      background: linear-gradient(135deg, rgba(22, 163, 74, .24), rgba(13, 148, 136, .18));
-      border: 1px solid rgba(74, 222, 128, .36);
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.35);
       border-radius: 10px;
       padding: 7px 12px;
       margin: 5px 6px 5px 0;
-      color: #bbf7d0;
+      color: #bae6fd;
       font-size: .84rem;
       font-weight: 700;
+      transition: all 0.2s ease;
   }
+  .chemical-pill:hover {
+      background: rgba(14, 116, 144, 0.45);
+      border-color: #38bdf8;
+      color: #ffffff;
+      transform: translateY(-2px);
+  }
+
   [dir="rtl"] .plant-info-card {
-      padding: 15px 20px 16px 18px;
+      padding: 16px 21px 17px 19px;
       text-align: right;
   }
   [dir="rtl"] .plant-info-card::before {
@@ -510,13 +634,16 @@ st.markdown("""
   [dir="rtl"] .chemical-pill {
       margin: 5px 0 5px 6px;
   }
+  [dir="rtl"] .bar-wrap:hover {
+      transform: translateX(-4px);
+  }
 </style>
 """, unsafe_allow_html=True)
 
 top_left, top_right = st.columns([3.1, 1.1])
 with top_left:
     st.markdown(
-        '<div class="top-lang-badge">🌿 Custom 1,600-Species AI &bull; PFAF &bull; Moroccan Ethnobotany &bull; PubChem</div>',
+        '<div class="top-lang-badge">🌿 AI Phytotherapy &bull; 1,600 Species &bull; PFAF &bull; PubChem</div>',
         unsafe_allow_html=True
     )
 with top_right:
@@ -605,21 +732,28 @@ def load_assets():
 model_1600, all_species, species_lookup, ref_urls_map = load_assets()
 
 @st.cache_data(ttl=86400, show_spinner=False)
-def get_reference_photo_url(scientific_name: str):
-    if scientific_name in ref_urls_map and ref_urls_map[scientific_name]:
-        return ref_urls_map[scientific_name]
+def get_reference_photo_bytes(scientific_name: str):
+    url = ref_urls_map.get(scientific_name, "")
+    if not url:
+        try:
+            q = urllib.parse.quote(scientific_name)
+            api_url = f"https://api.inaturalist.org/v1/taxa?q={q}&per_page=1"
+            req = urllib.request.Request(api_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            results = data.get("results", [])
+            if results and results[0].get("default_photo"):
+                url = results[0]["default_photo"].get("medium_url", "")
+        except Exception:
+            url = ""
+    if not url:
+        return None
     try:
-        q = urllib.parse.quote(scientific_name)
-        url = f"https://api.inaturalist.org/v1/taxa?q={q}&per_page=1"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=8) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        results = data.get("results", [])
-        if results and results[0].get("default_photo"):
-            return results[0]["default_photo"].get("medium_url", "")
+        img_req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+        with urllib.request.urlopen(img_req, timeout=8) as r:
+            return r.read()
     except Exception:
-        pass
-    return ""
+        return None
 
 def predict_top5(img: Image.Image):
     img_orig = img.convert("RGB").resize((192, 192))
@@ -714,7 +848,7 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     with urllib.request.urlopen(req2) as r:
         return json.loads(r.read())["html_url"]
 
-for k in ("top5", "feedback_sent", "img_bytes", "chemicals", "ref_photos"):
+for k in ("top5", "feedback_sent", "img_bytes", "chemicals"):
     if k not in st.session_state:
         st.session_state[k] = None
 
@@ -724,7 +858,7 @@ st.markdown(f"""
 <div class="hero-box" dir="{page_dir}">
   <h1 style="margin:0 0 10px 0;font-size:2.2rem;font-weight:800;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.25);">🌿 {tr('hero')}</h1>
   <p style="margin:0 0 12px 0;font-size:1.05rem;color:#ecfdf5;opacity:.95;">{tr('subtitle')}</p>
-  <span class="hero-badge">{tr('developed')} <b>Hamza Oulbayyad</b></span>
+  <span class="hero-badge">{tr('badge_info')}</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -774,10 +908,6 @@ with col_input:
 
             with st.spinner(tr("fetching")):
                 st.session_state.chemicals = get_chemical_compounds(top5[0][0])
-                st.session_state.ref_photos = [
-                    (sp_name, prob, get_reference_photo_url(sp_name))
-                    for sp_name, prob in top5[:3]
-                ]
 
 with col_results:
     if st.session_state.top5 is not None:
@@ -788,7 +918,7 @@ with col_results:
         bars_parts = []
         for idx, (sp_name, prob) in enumerate(top5):
             fill_cls = "bar-fill-top" if idx == 0 else "bar-fill-sub"
-            width_pct = max(prob * 100.0, 2.0)
+            width_pct = max(prob * 100.0, 2.5)
             bars_parts.append(
                 f'<div class="bar-wrap">'
                 f'<div class="bar-header"><span dir="ltr"><i>{html.escape(sp_name)}</i></span><span dir="ltr" style="color:#4ade80;">{prob*100:.1f}%</span></div>'
@@ -798,30 +928,28 @@ with col_results:
 
         st.markdown(
             f'<div class="model-card-primary" dir="{page_dir}">'
-            f'<div style="font-size:1.15rem;font-weight:800;color:#ecfdf5;margin-bottom:12px;">{tr("top5_title")}</div>'
+            f'<div style="font-size:1.15rem;font-weight:800;color:#f8fafc;margin-bottom:12px;">{tr("top5_title")}</div>'
             f'{"".join(bars_parts)}'
             f'</div>',
             unsafe_allow_html=True,
         )
 
-        ref_photos = st.session_state.ref_photos or []
-        valid_refs = [r for r in ref_photos if r[2]]
-        if valid_refs:
+        ref_items = []
+        for sp_name, prob in top5[:3]:
+            img_b = get_reference_photo_bytes(sp_name)
+            if img_b:
+                ref_items.append((sp_name, prob, img_b))
+
+        if ref_items:
             st.markdown(
                 f'<div dir="{page_dir}" class="plant-section-heading">'
                 f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
                 unsafe_allow_html=True,
             )
-            ref_cols = st.columns(len(valid_refs), gap="medium")
-            for idx, (sp_name, prob, ref_url) in enumerate(valid_refs):
+            ref_cols = st.columns(len(ref_items), gap="medium")
+            for idx, (sp_name, prob, img_b) in enumerate(ref_items):
                 with ref_cols[idx]:
-                    st.markdown(
-                        f'<div class="ref-card">'
-                        f'<img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>'
-                        f'<div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>'
-                        f'</div>',
-                        unsafe_allow_html=True,
-                    )
+                    st.image(img_b, caption=f"{sp_name} ({prob*100:.1f}%)", use_container_width=True)
 
         sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
         sahara_toxic = bool(info.get("is_toxic_morocco_study", False))
@@ -870,12 +998,18 @@ with col_results:
         common_raw = clean_val(info.get("Common Name") or info.get("common_name"))
         common_tr = translate_botanical_text(common_raw, LANG) if common_raw != "—" else "—"
 
-        id_c1, id_c2, id_c3 = st.columns(3, gap="medium")
+        id_c1, id_c2 = st.columns(2, gap="medium")
         with id_c1:
             st.markdown(
                 f'<div dir="{page_dir}" class="plant-info-card">'
                 f'<div class="plant-info-title">{tr("scientific")}</div>'
                 f'<div class="plant-info-value"><i dir="ltr">{html.escape(best_sp)}</i></div></div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown(
+                f'<div dir="{page_dir}" class="plant-info-card">'
+                f'<div class="plant-info-title">{tr("vernacular")}</div>'
+                f'<div class="plant-info-value">{html.escape(vernacular_str)}</div></div>',
                 unsafe_allow_html=True,
             )
         with id_c2:
@@ -885,11 +1019,10 @@ with col_results:
                 f'<div class="plant-info-value">{html.escape(common_tr)}</div></div>',
                 unsafe_allow_html=True,
             )
-        with id_c3:
             st.markdown(
                 f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("vernacular")}</div>'
-                f'<div class="plant-info-value">{html.escape(vernacular_str)}</div></div>',
+                f'<div class="plant-info-title">{tr("confidence")}</div>'
+                f'<div class="plant-info-value"><span dir="ltr" style="color:#4ade80;font-weight:800;">{best_prob*100:.1f}%</span></div></div>',
                 unsafe_allow_html=True,
             )
 
@@ -983,7 +1116,7 @@ with col_results:
             )
             st.markdown(
                 f'<div dir="{page_dir}" class="chemical-panel">'
-                f'<div style="color:#a7f3d0;font-size:.86rem;margin-bottom:8px;">{html.escape(tr("chem_note"))}</div>'
+                f'<div style="color:#94a3b8;font-size:.86rem;margin-bottom:8px;">{html.escape(tr("chem_note"))}</div>'
                 + " ".join(f'<span dir="ltr" class="chemical-pill">{html.escape(str(n))}</span>' for n in chemicals)
                 + '</div>',
                 unsafe_allow_html=True,
@@ -1029,7 +1162,7 @@ with col_results:
     else:
         st.markdown(
             f'<div dir="{page_dir}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;'
-            f'height:380px;background:rgba(30,41,59,0.3);border:1px dashed rgba(255,255,255,0.15);'
+            f'height:380px;background:rgba(15,23,42,0.55);border:1px dashed rgba(148,163,184,0.25);'
             f'border-radius:22px;color:#94a3b8;text-align:center;padding:20px;">'
             f'<div style="font-size:2.8rem;margin-bottom:12px;">🌱</div>'
             f'<div style="font-size:1.15rem;font-weight:700;color:#e2e8f0;">{tr("ready")}</div>'
@@ -1042,7 +1175,7 @@ st.markdown(
     f'<div dir="{page_dir}" style="text-align:center;font-size:.85rem;color:#94a3b8;margin-top:40px;'
     f'border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">'
     f'{tr("academic")}<br>'
-    f'<b>Hamza Oulbayyad</b> • {tr("dataset")} • <b>Version 2.0 (1,600 Species)</b>'
+    f'{tr("dataset")} • <b>Version 2.0</b>'
     f'</div>',
     unsafe_allow_html=True,
 )
