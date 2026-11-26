@@ -1,3 +1,4 @@
+
 import json
 import urllib.request
 import urllib.parse
@@ -39,7 +40,7 @@ TEXT = {
         "analyse": "📊  |  Analyse Plant  ➔",
         "upload_first": "Please upload or capture a plant photo first.",
         "running": "🌿 Analysing plant across 1,600 species...",
-        "fetching": "🧪 Retrieving chemical compounds & reference photos...",
+        "fetching": "🧪 Retrieving chemical compounds from PubChem...",
         "top5_title": "🎯 Top 5 Predicted Species",
         "ref_gallery": "🖼️ Visual Reference Comparison (iNaturalist)",
         "plant_id": "Plant Identification",
@@ -90,7 +91,7 @@ TEXT = {
         "analyse": "📊  |  Analyser la plante  ➔",
         "upload_first": "Veuillez importer ou prendre une photo d’une plante.",
         "running": "🌿 Analyse parmi 1 600 espèces...",
-        "fetching": "🧪 Récupération des composés chimiques et photos de référence...",
+        "fetching": "🧪 Récupération des composés chimiques (PubChem)...",
         "top5_title": "🎯 Top 5 des espèces prédites",
         "ref_gallery": "🖼️ Comparaison visuelle (iNaturalist)",
         "plant_id": "Identification de la plante",
@@ -141,7 +142,7 @@ TEXT = {
         "analyse": "📊  |  تحليل النبتة  ➔",
         "upload_first": "يرجى رفع صورة النبتة أو التقاطها أولاً.",
         "running": "🌿 جارٍ تحليل النبتة ومقارنتها بـ 1,600 نوع...",
-        "fetching": "🧪 جارٍ جلب المركبات الكيميائية والصور المرجعية...",
+        "fetching": "🧪 جارٍ جلب المركبات الكيميائية من PubChem...",
         "top5_title": "🎯 أكثر 5 أنواع متوقعة",
         "ref_gallery": "🖼️ صور مرجعية للمقارنة البصرية (iNaturalist)",
         "plant_id": "بطاقة هوية النبتة",
@@ -323,6 +324,32 @@ st.markdown("""
       border-radius: 999px;
       background: linear-gradient(90deg, #0284c7, #0d9488, #2dd4bf);
   }
+  .ref-card {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 18px;
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 10px;
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.24s ease, box-shadow 0.24s ease;
+  }
+  .ref-card:hover {
+      transform: translateY(-4px);
+      border-color: #4ade80;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4), 0 0 18px rgba(74, 222, 128, 0.18);
+  }
+  .ref-card img {
+      width: 100%;
+      height: 175px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 8px;
+  }
+  .ref-caption {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #a7f3d0;
+  }
   .toxic-alert-box {
       background: linear-gradient(135deg, rgba(127, 29, 29, 0.85), rgba(153, 27, 27, 0.65));
       border: 1.5px solid #f87171;
@@ -363,7 +390,6 @@ st.markdown("""
       border-color: rgba(74, 222, 128, 0.45);
   }
 
-  /* Interactive Tactile Buttons */
   .stButton>button {
       border-radius: 14px !important;
       font-weight: 700 !important;
@@ -505,7 +531,6 @@ st.markdown("""
       color: #ffffff !important;
   }
 
-  /* Refined Slate-Glass Section Headings & Interactive Cards */
   .plant-section-heading {
       display: flex;
       align-items: center;
@@ -732,28 +757,21 @@ def load_assets():
 model_1600, all_species, species_lookup, ref_urls_map = load_assets()
 
 @st.cache_data(ttl=86400, show_spinner=False)
-def get_reference_photo_bytes(scientific_name: str):
-    url = ref_urls_map.get(scientific_name, "")
-    if not url:
-        try:
-            q = urllib.parse.quote(scientific_name)
-            api_url = f"https://api.inaturalist.org/v1/taxa?q={q}&per_page=1"
-            req = urllib.request.Request(api_url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-            with urllib.request.urlopen(req, timeout=8) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            results = data.get("results", [])
-            if results and results[0].get("default_photo"):
-                url = results[0]["default_photo"].get("medium_url", "")
-        except Exception:
-            url = ""
-    if not url:
-        return None
+def get_reference_photo_url(scientific_name: str):
+    if scientific_name in ref_urls_map and ref_urls_map[scientific_name]:
+        return ref_urls_map[scientific_name]
     try:
-        img_req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-        with urllib.request.urlopen(img_req, timeout=8) as r:
-            return r.read()
+        q = urllib.parse.quote(scientific_name)
+        url = f"https://api.inaturalist.org/v1/taxa?q={q}&per_page=1"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        results = data.get("results", [])
+        if results and results[0].get("default_photo"):
+            return results[0]["default_photo"].get("medium_url", "")
     except Exception:
-        return None
+        pass
+    return ""
 
 def predict_top5(img: Image.Image):
     img_orig = img.convert("RGB").resize((192, 192))
@@ -848,7 +866,7 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     with urllib.request.urlopen(req2) as r:
         return json.loads(r.read())["html_url"]
 
-for k in ("top5", "feedback_sent", "img_bytes", "chemicals"):
+for k in ("top5", "feedback_sent", "img_bytes", "chemicals", "ref_photos"):
     if k not in st.session_state:
         st.session_state[k] = None
 
@@ -908,6 +926,10 @@ with col_input:
 
             with st.spinner(tr("fetching")):
                 st.session_state.chemicals = get_chemical_compounds(top5[0][0])
+                st.session_state.ref_photos = [
+                    (sp_name, prob, get_reference_photo_url(sp_name))
+                    for sp_name, prob in top5[:3]
+                ]
 
 with col_results:
     if st.session_state.top5 is not None:
@@ -934,22 +956,24 @@ with col_results:
             unsafe_allow_html=True,
         )
 
-        ref_items = []
-        for sp_name, prob in top5[:3]:
-            img_b = get_reference_photo_bytes(sp_name)
-            if img_b:
-                ref_items.append((sp_name, prob, img_b))
-
-        if ref_items:
+        ref_photos = st.session_state.ref_photos or []
+        valid_refs = [r for r in ref_photos if r[2]]
+        if valid_refs:
             st.markdown(
                 f'<div dir="{page_dir}" class="plant-section-heading">'
                 f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
                 unsafe_allow_html=True,
             )
-            ref_cols = st.columns(len(ref_items), gap="medium")
-            for idx, (sp_name, prob, img_b) in enumerate(ref_items):
+            ref_cols = st.columns(len(valid_refs), gap="medium")
+            for idx, (sp_name, prob, ref_url) in enumerate(valid_refs):
                 with ref_cols[idx]:
-                    st.image(img_b, caption=f"{sp_name} ({prob*100:.1f}%)", use_container_width=True)
+                    st.markdown(
+                        f'<div class="ref-card">'
+                        f'<img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>'
+                        f'<div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
 
         sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
         sahara_toxic = bool(info.get("is_toxic_morocco_study", False))
