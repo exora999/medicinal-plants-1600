@@ -1199,7 +1199,7 @@ st.markdown(
     f'<div dir="{page_dir}" style="text-align:center;font-size:.85rem;color:#94a3b8;margin-top:40px;'
     f'border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">'
     f'{tr("academic")}<br>'
-    f'{tr("dataset")} • <b>Version 2.0</b>'
+    f'{tr("dataset")} • <b>Version 1.0</b>'
     f'</div>',
     unsafe_allow_html=True,
 )
