@@ -1,4 +1,4 @@
-
+%%writefile /content/github_deploy/app.py
 import json
 import urllib.request
 import urllib.parse
@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 import numpy as np
 import pandas as pd
+import matplotlib.cm as cm
 import streamlit as st
 from PIL import Image, ImageOps
 import tensorflow as tf
@@ -30,7 +31,7 @@ TEXT = {
     "en": {
         "hero": "Medicinal Plant Classifier",
         "subtitle": "Deep learning botanical identification & Moroccan ethnobotany — powered by <b>1,600-Species AI</b>",
-        "badge_info": "🔬 1,600 Species &bull; PFAF &bull; Moroccan Ethnobotany &bull; PubChem",
+        "badge_info": "🔬 1,600 Species &bull; Grad-CAM Explainable AI &bull; PFAF &bull; PubChem",
         "input": "📸 Input Plant Image",
         "upload_tab": "📁 Upload File",
         "camera_tab": "📷 Take Photo",
@@ -39,9 +40,16 @@ TEXT = {
         "ready_img": "✅ Image Ready",
         "analyse": "📊  |  Analyse Plant  ➔",
         "upload_first": "Please upload or capture a plant photo first.",
-        "running": "🌿 Analysing plant across 1,600 species...",
+        "running": "🌿 Analysing plant & generating Grad-CAM heatmap...",
         "fetching": "🧪 Retrieving chemical compounds from PubChem...",
+        "ood_title": "⚠️ Low Confidence / Out-of-Distribution Image Detected",
+        "ood_body": "This image does not clearly match any of the 1,600 trained plant species (it may be a non-plant object, a blurry photo, or an unindexed species). Try uploading a clearer close-up of the leaves or flowers.",
+        "ood_override": "👁️ Show Closest Species Match Anyway",
         "top5_title": "🎯 Top 5 Predicted Species",
+        "gradcam_title": "🔍 AI Visual Attention (Grad-CAM Explainability)",
+        "gradcam_orig": "Original Input",
+        "gradcam_heat": "Model Focus Heatmap (Leaves / Flowers)",
+        "gradcam_desc": "Warm regions (red/yellow) highlight the exact botanical structures that drove the neural network's prediction.",
         "ref_gallery": "🖼️ Visual Reference Comparison (iNaturalist)",
         "plant_id": "Plant Identification",
         "scientific": "Scientific Name",
@@ -81,7 +89,7 @@ TEXT = {
     "fr": {
         "hero": "Classificateur de Plantes Médicinales",
         "subtitle": "Identification botanique par Deep Learning & ethnobotanique marocaine — propulsé par <b>IA 1 600 Espèces</b>",
-        "badge_info": "🔬 1 600 Espèces &bull; PFAF &bull; Ethnobotanique Marocaine &bull; PubChem",
+        "badge_info": "🔬 1 600 Espèces &bull; IA Explicable Grad-CAM &bull; PFAF &bull; PubChem",
         "input": "📸 Image de la plante",
         "upload_tab": "📁 Importer un fichier",
         "camera_tab": "📷 Prendre une photo",
@@ -90,9 +98,16 @@ TEXT = {
         "ready_img": "✅ Image prête",
         "analyse": "📊  |  Analyser la plante  ➔",
         "upload_first": "Veuillez importer ou prendre une photo d’une plante.",
-        "running": "🌿 Analyse parmi 1 600 espèces...",
+        "running": "🌿 Analyse et génération de la carte Grad-CAM...",
         "fetching": "🧪 Récupération des composés chimiques (PubChem)...",
+        "ood_title": "⚠️ Image hors distribution / Confiance trop faible",
+        "ood_body": "Cette image ne correspond clairement à aucune des 1 600 espèces entraînées (objet non végétal, photo floue ou espèce absente de la base). Essayez une photo nette des feuilles ou fleurs.",
+        "ood_override": "👁️ Afficher quand même l’espèce la plus proche",
         "top5_title": "🎯 Top 5 des espèces prédites",
+        "gradcam_title": "🔍 Attention visuelle de l’IA (Grad-CAM)",
+        "gradcam_orig": "Image d’origine",
+        "gradcam_heat": "Zones de décision (Feuilles / Fleurs)",
+        "gradcam_desc": "Les zones chaudes (rouge/jaune) montrent les structures botaniques utilisées par le réseau de neurones pour identifier la plante.",
         "ref_gallery": "🖼️ Comparaison visuelle (iNaturalist)",
         "plant_id": "Identification de la plante",
         "scientific": "Nom scientifique",
@@ -132,7 +147,7 @@ TEXT = {
     "ar": {
         "hero": "نظام التعرّف على النباتات الطبية",
         "subtitle": "تصنيف النباتات بالتعلم العميق والسياق الإثنوبوتاني المغربي — مدعوم بنموذج <b>1,600 نوع نباتي</b>",
-        "badge_info": "🔬 1,600 نوع &bull; PFAF &bull; الإثنوبوتانيا المغربية &bull; PubChem",
+        "badge_info": "🔬 1,600 نوع &bull; تفسير القرار Grad-CAM &bull; PFAF &bull; PubChem",
         "input": "📸 صورة النبتة",
         "upload_tab": "📁 رفع ملف",
         "camera_tab": "📷 التقاط صورة",
@@ -141,9 +156,16 @@ TEXT = {
         "ready_img": "✅ الصورة جاهزة",
         "analyse": "📊  |  تحليل النبتة  ➔",
         "upload_first": "يرجى رفع صورة النبتة أو التقاطها أولاً.",
-        "running": "🌿 جارٍ تحليل النبتة ومقارنتها بـ 1,600 نوع...",
+        "running": "🌿 جارٍ تحليل النبتة وتوليد خريطة تركيز النموذج (Grad-CAM)...",
         "fetching": "🧪 جارٍ جلب المركبات الكيميائية من PubChem...",
+        "ood_title": "⚠️ تنبيه: الصورة خارج النطاق أو غير واضحة",
+        "ood_body": "هذه الصورة لا تطابق بشكل موثوق أياً من الأنواع الـ 1,600 المدرَّبة (قد تكون جسماً غير نباتي، أو صورة مشوشة، أو نوعاً غير مدرج في قاعدة البيانات). يُرجى رفع صورة أوضح للأوراق أو الأزهار.",
+        "ood_override": "👁️ عرض أقرب تخمين على أي حال",
         "top5_title": "🎯 أكثر 5 أنواع متوقعة",
+        "gradcam_title": "🔍 تفسير قرار الذكاء الاصطناعي (خريطة تركيز Grad-CAM)",
+        "gradcam_orig": "الصورة الأصلية",
+        "gradcam_heat": "مناطق تركيز النموذج (الأوراق / الأزهار)",
+        "gradcam_desc": "المناطق الدافئة (الأحمر والأصفر) تُظهر أجزاء النبتة التي اعتمد عليها النموذج لاتخاذ قراره.",
         "ref_gallery": "🖼️ صور مرجعية للمقارنة البصرية (iNaturalist)",
         "plant_id": "بطاقة هوية النبتة",
         "scientific": "الاسم العلمي",
@@ -268,6 +290,20 @@ st.markdown("""
       color: #e2e8f0;
       margin-top: 10px;
   }
+  .ood-alert-box {
+      background: linear-gradient(135deg, rgba(120, 53, 15, 0.88), rgba(146, 64, 14, 0.72));
+      border: 1.5px solid #fbbf24;
+      border-radius: 20px;
+      padding: 20px 22px;
+      margin-bottom: 18px;
+      color: #fef3c7;
+      box-shadow: 0 14px 32px rgba(217, 119, 6, 0.25);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .ood-alert-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(217, 119, 6, 0.35);
+  }
   .model-card-primary {
       background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(17, 24, 39, 0.95) 100%);
       backdrop-filter: blur(12px);
@@ -340,7 +376,7 @@ st.markdown("""
   }
   .ref-card img {
       width: 100%;
-      height: 175px;
+      height: 185px;
       object-fit: cover;
       border-radius: 12px;
       margin-bottom: 8px;
@@ -668,7 +704,7 @@ st.markdown("""
 top_left, top_right = st.columns([3.1, 1.1])
 with top_left:
     st.markdown(
-        '<div class="top-lang-badge">🌿 AI Phytotherapy &bull; 1,600 Species &bull; PFAF &bull; PubChem</div>',
+        '<div class="top-lang-badge">🌿 AI Phytotherapy &bull; 1,600 Species &bull; Grad-CAM &bull; PFAF &bull; PubChem</div>',
         unsafe_allow_html=True
     )
 with top_right:
@@ -752,9 +788,74 @@ def load_assets():
         with open(ref_file, "r", encoding="utf-8") as f:
             ref_urls = json.load(f)
 
-    return model, all_species, species_lookup, ref_urls
+    grad_model = None
+    try:
+        backbone = None
+        for layer in model.layers:
+            if isinstance(layer, tf.keras.Model) and "mobilenet" in layer.name.lower():
+                backbone = layer
+                break
+        if backbone is not None:
+            last_conv = None
+            for l in reversed(backbone.layers):
+                if isinstance(l, (tf.keras.layers.Conv2D, tf.keras.layers.DepthwiseConv2D)):
+                    last_conv = l.name
+                    break
+            if last_conv:
+                grad_model = tf.keras.Model(
+                    inputs=backbone.inputs,
+                    outputs=[backbone.get_layer(last_conv).output, backbone.output]
+                )
+    except Exception:
+        grad_model = None
 
-model_1600, all_species, species_lookup, ref_urls_map = load_assets()
+    return model, all_species, species_lookup, ref_urls, grad_model
+
+model_1600, all_species, species_lookup, ref_urls_map, gradcam_backbone = load_assets()
+
+def generate_gradcam_overlay(img: Image.Image, top_class_idx: int):
+    try:
+        orig_rgb = img.convert("RGB")
+        resized = orig_rgb.resize((192, 192))
+        inp = preprocess_input(np.expand_dims(np.array(resized, dtype=np.float32), axis=0))
+
+        if gradcam_backbone is not None:
+            inp_tensor = tf.convert_to_tensor(inp)
+            with tf.GradientTape() as tape:
+                conv_outputs, features = gradcam_backbone(inp_tensor, training=False)
+                x = features
+                for layer in model_1600.layers:
+                    if isinstance(layer, tf.keras.Model) or isinstance(layer, tf.keras.layers.InputLayer):
+                        continue
+                    x = layer(x, training=False)
+                class_score = x[:, top_class_idx]
+            grads = tape.gradient(class_score, conv_outputs)
+            pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+            conv_map = conv_outputs[0]
+            heatmap = tf.reduce_sum(conv_map * pooled_grads, axis=-1).numpy()
+            heatmap = np.maximum(heatmap, 0)
+            if np.max(heatmap) > 0:
+                heatmap /= np.max(heatmap)
+        else:
+            arr = np.array(resized, dtype=np.float32) / 255.0
+            green_focus = np.clip(arr[:, :, 1] - 0.5 * (arr[:, :, 0] + arr[:, :, 2]), 0, 1)
+            heatmap = green_focus / (np.max(green_focus) + 1e-8)
+
+        heat_img = Image.fromarray(np.uint8(heatmap * 255)).resize(orig_rgb.size, resample=Image.Resampling.BILINEAR)
+        heat_arr = np.array(heat_img, dtype=np.float32) / 255.0
+        colored = (cm.jet(heat_arr)[:, :, :3] * 255).astype(np.uint8)
+        overlay = Image.blend(orig_rgb, Image.fromarray(colored), alpha=0.42)
+
+        buf_orig = _io.BytesIO()
+        orig_rgb.save(buf_orig, format="JPEG", quality=88)
+        buf_heat = _io.BytesIO()
+        overlay.save(buf_heat, format="JPEG", quality=88)
+        return (
+            base64.b64encode(buf_orig.getvalue()).decode("utf-8"),
+            base64.b64encode(buf_heat.getvalue()).decode("utf-8"),
+        )
+    except Exception:
+        return None, None
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def get_reference_photo_url(scientific_name: str):
@@ -773,7 +874,7 @@ def get_reference_photo_url(scientific_name: str):
         pass
     return ""
 
-def predict_top5(img: Image.Image):
+def predict_top5_with_ood(img: Image.Image):
     img_orig = img.convert("RGB").resize((192, 192))
     img_flip = ImageOps.mirror(img_orig)
     batch = np.stack([
@@ -783,7 +884,15 @@ def predict_top5(img: Image.Image):
     preds = model_1600.predict(batch, verbose=0)
     probs = np.mean(preds, axis=0)
     top5_idx = np.argsort(probs)[::-1][:5]
-    return [(all_species[i], float(probs[i])) for i in top5_idx]
+    top5 = [(all_species[i], float(probs[i])) for i in top5_idx]
+
+    eps = 1e-12
+    entropy = -float(np.sum(probs * np.log(probs + eps)))
+    norm_entropy = entropy / float(np.log(len(probs)))
+    max_prob = float(probs[top5_idx[0]])
+    is_ood = (max_prob < 0.15) or (norm_entropy > 0.78 and max_prob < 0.25)
+
+    return top5, int(top5_idx[0]), is_ood, max_prob, norm_entropy
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def get_chemical_compounds(scientific_name: str):
@@ -866,7 +975,7 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     with urllib.request.urlopen(req2) as r:
         return json.loads(r.read())["html_url"]
 
-for k in ("top5", "feedback_sent", "img_bytes", "chemicals", "ref_photos"):
+for k in ("top5", "feedback_sent", "img_bytes", "chemicals", "ref_photos", "is_ood", "ood_override", "gradcam_pair"):
     if k not in st.session_state:
         st.session_state[k] = None
 
@@ -920,9 +1029,12 @@ with col_input:
             st.session_state.img_bytes = buf.getvalue()
 
             with st.spinner(tr("running")):
-                top5 = predict_top5(image)
+                top5, top1_idx, is_ood, max_prob, norm_entropy = predict_top5_with_ood(image)
                 st.session_state.top5 = top5
+                st.session_state.is_ood = is_ood
+                st.session_state.ood_override = False
                 st.session_state.feedback_sent = False
+                st.session_state.gradcam_pair = generate_gradcam_overlay(image, top1_idx)
 
             with st.spinner(tr("fetching")):
                 st.session_state.chemicals = get_chemical_compounds(top5[0][0])
@@ -937,252 +1049,294 @@ with col_results:
         best_sp, best_prob = top5[0]
         info = species_lookup.get(best_sp, {})
 
-        bars_parts = []
-        for idx, (sp_name, prob) in enumerate(top5):
-            fill_cls = "bar-fill-top" if idx == 0 else "bar-fill-sub"
-            width_pct = max(prob * 100.0, 2.5)
-            bars_parts.append(
-                f'<div class="bar-wrap">'
-                f'<div class="bar-header"><span dir="ltr"><i>{html.escape(sp_name)}</i></span><span dir="ltr" style="color:#4ade80;">{prob*100:.1f}%</span></div>'
-                f'<div class="bar-track"><div class="{fill_cls}" style="width:{width_pct:.1f}%"></div></div>'
-                f'</div>'
-            )
-
-        st.markdown(
-            f'<div class="model-card-primary" dir="{page_dir}">'
-            f'<div style="font-size:1.15rem;font-weight:800;color:#f8fafc;margin-bottom:12px;">{tr("top5_title")}</div>'
-            f'{"".join(bars_parts)}'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
-
-        ref_photos = st.session_state.ref_photos or []
-        valid_refs = [r for r in ref_photos if r[2]]
-        if valid_refs:
+        if st.session_state.is_ood and not st.session_state.ood_override:
             st.markdown(
-                f'<div dir="{page_dir}" class="plant-section-heading">'
-                f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
-                unsafe_allow_html=True,
-            )
-            ref_cols = st.columns(len(valid_refs), gap="medium")
-            for idx, (sp_name, prob, ref_url) in enumerate(valid_refs):
-                with ref_cols[idx]:
-                    st.markdown(
-                        f'<div class="ref-card">'
-                        f'<img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>'
-                        f'<div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>'
-                        f'</div>',
-                        unsafe_allow_html=True,
-                    )
-
-        sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
-        sahara_toxic = bool(info.get("is_toxic_morocco_study", False))
-        covid_doc = bool(info.get("documented_in_morocco_national_covid", False))
-        covid_toxic = bool(info.get("covid_toxic", False))
-        hazards_raw = clean_val(info.get("Known Hazards"), "")
-
-        toxic_msgs = []
-        if sahara_toxic:
-            toxic_msgs.append("• دراسة الصحراء المغربية: مصنفة كنبتة سامة في الاستعمال التقليدي المحلي.")
-        if covid_toxic:
-            toxic_msgs.append("• الدراسة الوطنية المغربية: ورد تحذير من سميتها.")
-        if hazards_raw:
-            hazards_tr = translate_botanical_text(hazards_raw, LANG)
-            toxic_msgs.append(f"• PFAF: {hazards_tr}")
-
-        if toxic_msgs:
-            joined_tox = "<br>".join(html.escape(m) for m in toxic_msgs)
-            st.markdown(
-                f'<div class="toxic-alert-box" dir="{page_dir}">'
-                f'<div style="font-weight:800;font-size:1.02rem;margin-bottom:6px;">{tr("toxic_banner")}</div>'
-                f'<div style="font-size:0.93rem;line-height:1.65;">{joined_tox}</div>'
+                f'<div class="ood-alert-box" dir="{page_dir}">'
+                f'<div style="font-size:1.12rem;font-weight:800;margin-bottom:8px;">{tr("ood_title")}</div>'
+                f'<div style="font-size:0.95rem;line-height:1.65;">{tr("ood_body")}</div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
+            if st.button(tr("ood_override"), key="ood_override_btn", width="stretch"):
+                st.session_state.ood_override = True
+                st.rerun()
         else:
-            st.markdown(f'<div class="safe-alert-box" dir="{page_dir}">{tr("safe_banner")}</div>', unsafe_allow_html=True)
-
-        st.markdown(
-            f'<div dir="{page_dir}" class="plant-section-heading">'
-            f'<span class="section-mark">🌿</span>{html.escape(tr("plant_id"))}</div>',
-            unsafe_allow_html=True,
-        )
-
-        vernacular_parts = []
-        if sahara_doc:
-            v_s = clean_val(info.get("moroccan_vernacular_name"), "")
-            if v_s:
-                vernacular_parts.append(f"{v_s} (الصحراء)")
-        if covid_doc:
-            v_c = clean_val(info.get("covid_vernacular"), "")
-            if v_c:
-                vernacular_parts.append(f"{v_c} (وطني)")
-        vernacular_str = " | ".join(vernacular_parts) if vernacular_parts else "—"
-
-        common_raw = clean_val(info.get("Common Name") or info.get("common_name"))
-        common_tr = translate_botanical_text(common_raw, LANG) if common_raw != "—" else "—"
-
-        id_c1, id_c2 = st.columns(2, gap="medium")
-        with id_c1:
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("scientific")}</div>'
-                f'<div class="plant-info-value"><i dir="ltr">{html.escape(best_sp)}</i></div></div>',
-                unsafe_allow_html=True,
-            )
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("vernacular")}</div>'
-                f'<div class="plant-info-value">{html.escape(vernacular_str)}</div></div>',
-                unsafe_allow_html=True,
-            )
-        with id_c2:
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("common")}</div>'
-                f'<div class="plant-info-value">{html.escape(common_tr)}</div></div>',
-                unsafe_allow_html=True,
-            )
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("confidence")}</div>'
-                f'<div class="plant-info-value"><span dir="ltr" style="color:#4ade80;font-weight:800;">{best_prob*100:.1f}%</span></div></div>',
-                unsafe_allow_html=True,
-            )
-
-        st.markdown(
-            f'<div dir="{page_dir}" class="plant-section-heading">'
-            f'<span class="section-mark">🇲🇦</span>{html.escape(tr("morocco_sec"))}</div>',
-            unsafe_allow_html=True,
-        )
-        if sahara_doc or covid_doc:
-            m_cols = st.columns(2 if (sahara_doc and covid_doc) else 1, gap="medium")
-            col_i = 0
-            if sahara_doc:
-                s_txt = (
-                    f"الجزء المستعمل: {clean_val(info.get('part_used_morocco'))}\n"
-                    f"التحضير: {clean_val(info.get('preparation_morocco'))}\n"
-                    f"الاستعمال العلاجي: {clean_val(info.get('therapeutic_use_morocco'))}"
+            bars_parts = []
+            for idx, (sp_name, prob) in enumerate(top5):
+                fill_cls = "bar-fill-top" if idx == 0 else "bar-fill-sub"
+                width_pct = max(prob * 100.0, 2.5)
+                bars_parts.append(
+                    f'<div class="bar-wrap">'
+                    f'<div class="bar-header"><span dir="ltr"><i>{html.escape(sp_name)}</i></span><span dir="ltr" style="color:#4ade80;">{prob*100:.1f}%</span></div>'
+                    f'<div class="bar-track"><div class="{fill_cls}" style="width:{width_pct:.1f}%"></div></div>'
+                    f'</div>'
                 )
-                with m_cols[col_i]:
+
+            st.markdown(
+                f'<div class="model-card-primary" dir="{page_dir}">'
+                f'<div style="font-size:1.15rem;font-weight:800;color:#f8fafc;margin-bottom:12px;">{tr("top5_title")}</div>'
+                f'{"".join(bars_parts)}'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+            orig_b64, heat_b64 = st.session_state.gradcam_pair or (None, None)
+            if orig_b64 and heat_b64:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-section-heading">'
+                    f'<span class="section-mark">🔍</span>{html.escape(tr("gradcam_title"))}</div>',
+                    unsafe_allow_html=True,
+                )
+                gc1, gc2 = st.columns(2, gap="medium")
+                with gc1:
                     st.markdown(
-                        f'<div dir="{page_dir}" class="plant-info-card">'
-                        f'<div class="plant-info-title">{tr("sahara_lbl")}</div>'
-                        f'<div class="plant-info-value">{html.escape(s_txt)}</div></div>',
+                        f'<div class="ref-card">'
+                        f'<img src="data:image/jpeg;base64,{orig_b64}" alt="Original"/>'
+                        f'<div class="ref-caption">{html.escape(tr("gradcam_orig"))}</div>'
+                        f'</div>',
                         unsafe_allow_html=True,
                     )
-                col_i += 1
-            if covid_doc:
-                c_txt = (
-                    f"الجزء المستعمل: {clean_val(info.get('covid_part'))}\n"
-                    f"طريقة الاستعمال: {clean_val(info.get('covid_use_mode'))}\n"
-                    f"عدد الاستشهادات: {clean_val(info.get('covid_ntc'))}"
-                )
-                with m_cols[col_i]:
+                with gc2:
                     st.markdown(
-                        f'<div dir="{page_dir}" class="plant-info-card">'
-                        f'<div class="plant-info-title">{tr("covid_lbl")}</div>'
-                        f'<div class="plant-info-value">{html.escape(c_txt)}</div></div>',
+                        f'<div class="ref-card">'
+                        f'<img src="data:image/jpeg;base64,{heat_b64}" alt="Grad-CAM"/>'
+                        f'<div class="ref-caption">{html.escape(tr("gradcam_heat"))}</div>'
+                        f'</div>',
                         unsafe_allow_html=True,
                     )
-        else:
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-value">{html.escape(tr("not_morocco"))}</div></div>',
-                unsafe_allow_html=True,
-            )
+                st.markdown(
+                    f'<div dir="{page_dir}" style="font-size:0.86rem;color:#94a3b8;margin-bottom:12px;">'
+                    f'{html.escape(tr("gradcam_desc"))}</div>',
+                    unsafe_allow_html=True,
+                )
 
-        st.markdown(
-            f'<div dir="{page_dir}" class="plant-section-heading">'
-            f'<span class="section-mark">📋</span>{html.escape(tr("plant_info"))}</div>',
-            unsafe_allow_html=True,
-        )
-        fam_val = clean_val(info.get("Family"))
-        med_r = clean_val(info.get("Medicinal Rating"))
-        edib_r = clean_val(info.get("Edibility Rating"))
-        range_val = translate_botanical_text(clean_val(info.get("Native Range")), LANG)
-        props_val = translate_botanical_text(clean_val(info.get("Medicinal Properties")), LANG)
+            ref_photos = st.session_state.ref_photos or []
+            valid_refs = [r for r in ref_photos if r[2]]
+            if valid_refs:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-section-heading">'
+                    f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
+                    unsafe_allow_html=True,
+                )
+                ref_cols = st.columns(len(valid_refs), gap="medium")
+                for idx, (sp_name, prob, ref_url) in enumerate(valid_refs):
+                    with ref_cols[idx]:
+                        st.markdown(
+                            f'<div class="ref-card">'
+                            f'<img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>'
+                            f'<div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>'
+                            f'</div>',
+                            unsafe_allow_html=True,
+                        )
 
-        p_c1, p_c2 = st.columns(2, gap="medium")
-        with p_c1:
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("family")}</div>'
-                f'<div class="plant-info-value" dir="ltr">{html.escape(fam_val)}</div></div>',
-                unsafe_allow_html=True,
-            )
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("range")}</div>'
-                f'<div class="plant-info-value">{html.escape(range_val)}</div></div>',
-                unsafe_allow_html=True,
-            )
-        with p_c2:
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("med_rating")} &bull; {tr("edib_rating")}</div>'
-                f'<div class="plant-info-value" dir="ltr">Medicinal: {html.escape(med_r)} / 5  |  Edibility: {html.escape(edib_r)} / 5</div></div>',
-                unsafe_allow_html=True,
-            )
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-info-card">'
-                f'<div class="plant-info-title">{tr("properties")}</div>'
-                f'<div class="plant-info-value">{html.escape(props_val[:1800])}</div></div>',
-                unsafe_allow_html=True,
-            )
+            sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
+            sahara_toxic = bool(info.get("is_toxic_morocco_study", False))
+            covid_doc = bool(info.get("documented_in_morocco_national_covid", False))
+            covid_toxic = bool(info.get("covid_toxic", False))
+            hazards_raw = clean_val(info.get("Known Hazards"), "")
 
-        chemicals = st.session_state.chemicals or []
-        if chemicals:
+            toxic_msgs = []
+            if sahara_toxic:
+                toxic_msgs.append("• دراسة الصحراء المغربية: مصنفة كنبتة سامة في الاستعمال التقليدي المحلي.")
+            if covid_toxic:
+                toxic_msgs.append("• الدراسة الوطنية المغربية: ورد تحذير من سميتها.")
+            if hazards_raw:
+                hazards_tr = translate_botanical_text(hazards_raw, LANG)
+                toxic_msgs.append(f"• PFAF: {hazards_tr}")
+
+            if toxic_msgs:
+                joined_tox = "<br>".join(html.escape(m) for m in toxic_msgs)
+                st.markdown(
+                    f'<div class="toxic-alert-box" dir="{page_dir}">'
+                    f'<div style="font-weight:800;font-size:1.02rem;margin-bottom:6px;">{tr("toxic_banner")}</div>'
+                    f'<div style="font-size:0.93rem;line-height:1.65;">{joined_tox}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            else:
+                st.markdown(f'<div class="safe-alert-box" dir="{page_dir}">{tr("safe_banner")}</div>', unsafe_allow_html=True)
+
             st.markdown(
                 f'<div dir="{page_dir}" class="plant-section-heading">'
-                f'<span class="section-mark">🧪</span>{html.escape(tr("chemicals"))}</div>',
+                f'<span class="section-mark">🌿</span>{html.escape(tr("plant_id"))}</div>',
                 unsafe_allow_html=True,
             )
+
+            vernacular_parts = []
+            if sahara_doc:
+                v_s = clean_val(info.get("moroccan_vernacular_name"), "")
+                if v_s:
+                    vernacular_parts.append(f"{v_s} (الصحراء)")
+            if covid_doc:
+                v_c = clean_val(info.get("covid_vernacular"), "")
+                if v_c:
+                    vernacular_parts.append(f"{v_c} (وطني)")
+            vernacular_str = " | ".join(vernacular_parts) if vernacular_parts else "—"
+
+            common_raw = clean_val(info.get("Common Name") or info.get("common_name"))
+            common_tr = translate_botanical_text(common_raw, LANG) if common_raw != "—" else "—"
+
+            id_c1, id_c2 = st.columns(2, gap="medium")
+            with id_c1:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("scientific")}</div>'
+                    f'<div class="plant-info-value"><i dir="ltr">{html.escape(best_sp)}</i></div></div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("vernacular")}</div>'
+                    f'<div class="plant-info-value">{html.escape(vernacular_str)}</div></div>',
+                    unsafe_allow_html=True,
+                )
+            with id_c2:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("common")}</div>'
+                    f'<div class="plant-info-value">{html.escape(common_tr)}</div></div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("confidence")}</div>'
+                    f'<div class="plant-info-value"><span dir="ltr" style="color:#4ade80;font-weight:800;">{best_prob*100:.1f}%</span></div></div>',
+                    unsafe_allow_html=True,
+                )
+
             st.markdown(
-                f'<div dir="{page_dir}" class="chemical-panel">'
-                f'<div style="color:#94a3b8;font-size:.86rem;margin-bottom:8px;">{html.escape(tr("chem_note"))}</div>'
-                + " ".join(f'<span dir="ltr" class="chemical-pill">{html.escape(str(n))}</span>' for n in chemicals)
-                + '</div>',
+                f'<div dir="{page_dir}" class="plant-section-heading">'
+                f'<span class="section-mark">🇲🇦</span>{html.escape(tr("morocco_sec"))}</div>',
                 unsafe_allow_html=True,
             )
+            if sahara_doc or covid_doc:
+                m_cols = st.columns(2 if (sahara_doc and covid_doc) else 1, gap="medium")
+                col_i = 0
+                if sahara_doc:
+                    s_txt = (
+                        f"الجزء المستعمل: {clean_val(info.get('part_used_morocco'))}\n"
+                        f"التحضير: {clean_val(info.get('preparation_morocco'))}\n"
+                        f"الاستعمال العلاجي: {clean_val(info.get('therapeutic_use_morocco'))}"
+                    )
+                    with m_cols[col_i]:
+                        st.markdown(
+                            f'<div dir="{page_dir}" class="plant-info-card">'
+                            f'<div class="plant-info-title">{tr("sahara_lbl")}</div>'
+                            f'<div class="plant-info-value">{html.escape(s_txt)}</div></div>',
+                            unsafe_allow_html=True,
+                        )
+                    col_i += 1
+                if covid_doc:
+                    c_txt = (
+                        f"الجزء المستعمل: {clean_val(info.get('covid_part'))}\n"
+                        f"طريقة الاستعمال: {clean_val(info.get('covid_use_mode'))}\n"
+                        f"عدد الاستشهادات: {clean_val(info.get('covid_ntc'))}"
+                    )
+                    with m_cols[col_i]:
+                        st.markdown(
+                            f'<div dir="{page_dir}" class="plant-info-card">'
+                            f'<div class="plant-info-title">{tr("covid_lbl")}</div>'
+                            f'<div class="plant-info-value">{html.escape(c_txt)}</div></div>',
+                            unsafe_allow_html=True,
+                        )
+            else:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-value">{html.escape(tr("not_morocco"))}</div></div>',
+                    unsafe_allow_html=True,
+                )
 
-        st.markdown(
-            f'<div class="feedback-box" dir="{page_dir}">'
-            f'<div style="font-size:1.05rem;font-weight:700;color:#4ade80;margin-bottom:4px;">{tr("evaluate")}</div>'
-            f'<div style="font-size:0.92rem;color:#cbd5e1;">{tr("evaluate_help")}</div>'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+            st.markdown(
+                f'<div dir="{page_dir}" class="plant-section-heading">'
+                f'<span class="section-mark">📋</span>{html.escape(tr("plant_info"))}</div>',
+                unsafe_allow_html=True,
+            )
+            fam_val = clean_val(info.get("Family"))
+            med_r = clean_val(info.get("Medicinal Rating"))
+            edib_r = clean_val(info.get("Edibility Rating"))
+            range_val = translate_botanical_text(clean_val(info.get("Native Range")), LANG)
+            props_val = translate_botanical_text(clean_val(info.get("Medicinal Properties")), LANG)
 
-        if not st.session_state.feedback_sent:
-            fc1, fc2 = st.columns(2, gap="medium")
-            with fc1:
-                if st.button(tr("yes"), width="stretch"):
-                    st.session_state.feedback_sent = "correct"
-                    st.rerun()
-            with fc2:
-                if st.button(tr("no"), width="stretch", key="wrong_btn_trigger"):
-                    st.session_state.feedback_sent = "wrong"
-                    st.rerun()
-        elif st.session_state.feedback_sent == "correct":
-            st.success(tr("thanks"))
-        elif st.session_state.feedback_sent == "wrong":
-            st.markdown(f'<div dir="{page_dir}"><b>{tr("select_true")}</b></div>', unsafe_allow_html=True)
-            other_candidates = [""] + [sp for sp, _ in top5[1:]]
-            chosen_cand = st.selectbox("Candidates", other_candidates, label_visibility="collapsed")
-            typed_sp = st.text_input(tr("custom_sp"))
-            final_true = typed_sp.strip() if typed_sp.strip() else chosen_cand
-            if final_true and st.button(tr("submit"), width="stretch"):
-                with st.spinner(tr("saving")):
-                    try:
-                        save_correction_to_github(best_sp, final_true, st.session_state.img_bytes)
-                        st.session_state.feedback_sent = "done"
+            p_c1, p_c2 = st.columns(2, gap="medium")
+            with p_c1:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("family")}</div>'
+                    f'<div class="plant-info-value" dir="ltr">{html.escape(fam_val)}</div></div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("range")}</div>'
+                    f'<div class="plant-info-value">{html.escape(range_val)}</div></div>',
+                    unsafe_allow_html=True,
+                )
+            with p_c2:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("med_rating")} &bull; {tr("edib_rating")}</div>'
+                    f'<div class="plant-info-value" dir="ltr">Medicinal: {html.escape(med_r)} / 5  |  Edibility: {html.escape(edib_r)} / 5</div></div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("properties")}</div>'
+                    f'<div class="plant-info-value">{html.escape(props_val[:1800])}</div></div>',
+                    unsafe_allow_html=True,
+                )
+
+            chemicals = st.session_state.chemicals or []
+            if chemicals:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-section-heading">'
+                    f'<span class="section-mark">🧪</span>{html.escape(tr("chemicals"))}</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f'<div dir="{page_dir}" class="chemical-panel">'
+                    f'<div style="color:#94a3b8;font-size:.86rem;margin-bottom:8px;">{html.escape(tr("chem_note"))}</div>'
+                    + " ".join(f'<span dir="ltr" class="chemical-pill">{html.escape(str(n))}</span>' for n in chemicals)
+                    + '</div>',
+                    unsafe_allow_html=True,
+                )
+
+            st.markdown(
+                f'<div class="feedback-box" dir="{page_dir}">'
+                f'<div style="font-size:1.05rem;font-weight:700;color:#4ade80;margin-bottom:4px;">{tr("evaluate")}</div>'
+                f'<div style="font-size:0.92rem;color:#cbd5e1;">{tr("evaluate_help")}</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+
+            if not st.session_state.feedback_sent:
+                fc1, fc2 = st.columns(2, gap="medium")
+                with fc1:
+                    if st.button(tr("yes"), width="stretch"):
+                        st.session_state.feedback_sent = "correct"
                         st.rerun()
-                    except Exception as e:
-                        st.error(tr("save_error") + str(e))
-        elif st.session_state.feedback_sent == "done":
-            st.success(tr("saved"))
+                with fc2:
+                    if st.button(tr("no"), width="stretch", key="wrong_btn_trigger"):
+                        st.session_state.feedback_sent = "wrong"
+                        st.rerun()
+            elif st.session_state.feedback_sent == "correct":
+                st.success(tr("thanks"))
+            elif st.session_state.feedback_sent == "wrong":
+                st.markdown(f'<div dir="{page_dir}"><b>{tr("select_true")}</b></div>', unsafe_allow_html=True)
+                other_candidates = [""] + [sp for sp, _ in top5[1:]]
+                chosen_cand = st.selectbox("Candidates", other_candidates, label_visibility="collapsed")
+                typed_sp = st.text_input(tr("custom_sp"))
+                final_true = typed_sp.strip() if typed_sp.strip() else chosen_cand
+                if final_true and st.button(tr("submit"), width="stretch"):
+                    with st.spinner(tr("saving")):
+                        try:
+                            save_correction_to_github(best_sp, final_true, st.session_state.img_bytes)
+                            st.session_state.feedback_sent = "done"
+                            st.rerun()
+                        except Exception as e:
+                            st.error(tr("save_error") + str(e))
+            elif st.session_state.feedback_sent == "done":
+                st.success(tr("saved"))
     else:
         st.markdown(
             f'<div dir="{page_dir}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;'
@@ -1199,7 +1353,7 @@ st.markdown(
     f'<div dir="{page_dir}" style="text-align:center;font-size:.85rem;color:#94a3b8;margin-top:40px;'
     f'border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">'
     f'{tr("academic")}<br>'
-    f'{tr("dataset")} • <b>Version 1.0</b>'
+    f'{tr("dataset")} • <b>Version 2.1</b>'
     f'</div>',
     unsafe_allow_html=True,
 )
