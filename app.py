@@ -1,4 +1,3 @@
-%%writefile /content/github_deploy/app.py
 import json
 import urllib.request
 import urllib.parse
