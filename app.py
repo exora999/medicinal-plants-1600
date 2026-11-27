@@ -864,6 +864,7 @@ def load_assets():
         grad_model = None
 
     return model_mob, model_eff, all_species, species_df, species_lookup, ref_urls, grad_model
+model_1600, model_effnet, all_species, species_df, species_lookup, ref_urls_map, gradcam_backbone = load_assets()
 
 def clean_val(val, default="—"):
     if val is None or (isinstance(val, float) and np.isnan(val)):
