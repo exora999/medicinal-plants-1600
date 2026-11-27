@@ -1,4 +1,3 @@
-
 import json
 import urllib.request
 import urllib.parse
@@ -31,7 +30,21 @@ TEXT = {
     "en": {
         "hero": "Medicinal Plant Classifier",
         "subtitle": "Dual-Model Ensemble AI (MobileNetV2 + EfficientNetV2) & Moroccan ethnobotany — <b>1,600 Species</b>",
-        "badge_info": "🔬 1,600 Species &bull; Weighted Ensemble AI &bull; Grad-CAM &bull; PFAF &bull; PubChem",
+        "badge_info": "🔬 1,600 Species &bull; Ensemble AI &bull; Smart Search &bull; Morocco Map &bull; PFAF &bull; PubChem",
+        "mode_photo": "📸 Identify by Photo (AI)",
+        "mode_search": "🔎 Search by Name or Use",
+        "search_header": "🔎 Smart Botanical & Moroccan Vernacular Search",
+        "search_placeholder": "Type Moroccan Darija name (e.g., أزير, فليو, الشيبة), scientific name, or medicinal use (e.g., cough, antiseptic)...",
+        "search_filter": "Filter Scope:",
+        "filter_all": "🌍 All 1,600 Species",
+        "filter_morocco": "🇲🇦 Documented in Morocco Only",
+        "search_matches": "Matching Species Found:",
+        "search_select": "Select a species to view its full botanical card, reference photos & Morocco map:",
+        "search_empty": "No matching species found. Try another keyword (e.g., Thymus, Mentha, أزير, الزعتر, fever).",
+        "map_title": "🗺️ Geographical Distribution in Morocco",
+        "map_regions_lbl": "Detected Ecological Regions:",
+        "map_general_med": "Mediterranean / North African Flora (Widespread across Moroccan plains & foothills)",
+        "map_not_native": "Not native to Morocco (Cultivated or exotic species outside Moroccan flora)",
         "input": "📸 Input Plant Image",
         "upload_tab": "📁 Upload File",
         "camera_tab": "📷 Take Photo",
@@ -89,7 +102,21 @@ TEXT = {
     "fr": {
         "hero": "Classificateur de Plantes Médicinales",
         "subtitle": "Ensemble IA Double Modèle (MobileNetV2 + EfficientNetV2) & ethnobotanique marocaine — <b>1 600 Espèces</b>",
-        "badge_info": "🔬 1 600 Espèces &bull; IA Ensemble Pondéré &bull; Grad-CAM &bull; PFAF &bull; PubChem",
+        "badge_info": "🔬 1 600 Espèces &bull; IA Ensemble &bull; Recherche Inverse &bull; Carte Maroc &bull; PFAF &bull; PubChem",
+        "mode_photo": "📸 Identifier par Photo (IA)",
+        "mode_search": "🔎 Rechercher par Nom ou Usage",
+        "search_header": "🔎 Recherche Botanique & Vernaculaire Marocaine",
+        "search_placeholder": "Tapez un nom marocain (ex. أزير, فليو, الشيبة), nom scientifique, ou usage médical (ex. cough, antiseptic)...",
+        "search_filter": "Portée du filtre :",
+        "filter_all": "🌍 Toutes les 1 600 Espèces",
+        "filter_morocco": "🇲🇦 Documentées au Maroc uniquement",
+        "search_matches": "Espèces correspondantes :",
+        "search_select": "Sélectionnez une espèce pour afficher sa fiche complète, ses photos et sa carte au Maroc :",
+        "search_empty": "Aucune espèce trouvée. Essayez un autre mot-clé (ex. Thymus, Mentha, أزير, الزعتر).",
+        "map_title": "🗺️ Répartition Géographique au Maroc",
+        "map_regions_lbl": "Régions écologiques détectées :",
+        "map_general_med": "Flore méditerranéenne / nord-africaine (Répandue dans les plaines et piémonts du Maroc)",
+        "map_not_native": "Non indigène au Maroc (Espèce cultivée ou exotique hors flore marocaine)",
         "input": "📸 Image de la plante",
         "upload_tab": "📁 Importer un fichier",
         "camera_tab": "📷 Prendre une photo",
@@ -101,13 +128,13 @@ TEXT = {
         "running": "🌿 Analyse par ensemble double modèle et carte Grad-CAM...",
         "fetching": "🧪 Récupération des composés chimiques (PubChem)...",
         "ood_title": "⚠️ Image hors distribution / Confiance trop faible",
-        "ood_body": "Cette image ne correspond clairement à aucune des 1 600 espèces entraînées (objet non végétal, photo floue ou espèce absente de la base). Essayez une photo nette des feuilles ou fleurs.",
+        "ood_body": "Cette image ne correspond clairement à aucune des 1 600 espèces entraînées. Essayez une photo nette des feuilles ou fleurs.",
         "ood_override": "👁️ Afficher quand même l’espèce la plus proche",
         "top5_title": "🎯 Top 5 des espèces prédites (Ensemble Double Modèle)",
         "gradcam_title": "🔍 Attention visuelle de l’IA (Grad-CAM)",
         "gradcam_orig": "Image d’origine",
         "gradcam_heat": "Zones de décision (Feuilles / Fleurs)",
-        "gradcam_desc": "Les zones chaudes (rouge/jaune) montrent les structures botaniques utilisées par le réseau de neurones pour identifier la plante.",
+        "gradcam_desc": "Les zones chaudes (rouge/jaune) montrent les structures botaniques utilisées par le réseau de neurones.",
         "ref_gallery": "🖼️ Comparaison visuelle (iNaturalist)",
         "plant_id": "Identification de la plante",
         "scientific": "Nom scientifique",
@@ -141,13 +168,27 @@ TEXT = {
         "save_error": "Erreur lors de l’enregistrement : ",
         "ready": "Prêt à analyser",
         "ready_help": "Importez une photo de plante puis cliquez sur <b>Analyser la plante</b>",
-        "academic": "⚠️ <b>Projet académique et éducatif</b> — N’utilisez PAS cet outil pour un diagnostic médical ou une décision de consommation.",
+        "academic": "⚠️ <b>Projet académique et éducatif</b> — N’utilisez PAS cet outil pour un diagnostic médical.",
         "dataset": "Base de données : 1 600 Espèces • 73 948 Images (iNaturalist + PFAF + Études Marocaines)"
     },
     "ar": {
         "hero": "نظام التعرّف على النباتات الطبية",
         "subtitle": "الذكاء الاصطناعي التجميعي المزدوج (MobileNetV2 + EfficientNetV2) والسياق المغربي — <b>1,600 نوع نباتي</b>",
-        "badge_info": "🔬 1,600 نوع &bull; دمج نموذجين Ensemble &bull; Grad-CAM &bull; PFAF &bull; PubChem",
+        "badge_info": "🔬 1,600 نوع &bull; دمج نموذجين &bull; بحث بالاسم/المرض &bull; خريطة المغرب &bull; PFAF &bull; PubChem",
+        "mode_photo": "📸 التعرّف بالصورة (ذكاء اصطناعي)",
+        "mode_search": "🔎 البحث بالاسم الدارج أو المرض",
+        "search_header": "🔎 البحث الذكي بالاسم الدارج المغربي أو الاستعمال العلاجي",
+        "search_placeholder": "اكتب الاسم بالدارجة (مثل: أزير، فليو، الشيبة، الزعتر، الحرمل) أو الاسم العلمي أو المرض (مثل: cough, stomach)...",
+        "search_filter": "نطاق البحث:",
+        "filter_all": "🌍 جميع الأنواع (1,600 نوع)",
+        "filter_morocco": "🇲🇦 النباتات الموثقة في المغرب فقط",
+        "search_matches": "الأنواع المطابقة:",
+        "search_select": "اختر النبتة لعرض بطاقتها العلمية وصورها وخريطة انتشارها في المغرب:",
+        "search_empty": "لم يتم العثور على نتائج مطابقة. جرّب كلمة أخرى (مثل: أزير، الزعتر، Thymus، Mentha، antiseptic).",
+        "map_title": "🗺️ خريطة الانتشار الجغرافي للنبتة في المغرب",
+        "map_regions_lbl": "المناطق البيئية المرصودة:",
+        "map_general_med": "نباتات حوض المتوسط وشمال إفريقيا (منتشرة في السهول والهضاب المغربية)",
+        "map_not_native": "غير مستوطنة طبيعياً في المغرب (نبتة مزروعة أو خارج الغطاء النباتي المغربي)",
         "input": "📸 صورة النبتة",
         "upload_tab": "📁 رفع ملف",
         "camera_tab": "📷 التقاط صورة",
@@ -159,7 +200,7 @@ TEXT = {
         "running": "🌿 جارٍ تحليل النبتة عبر النموذجين المدمجين وتوليد خريطة Grad-CAM...",
         "fetching": "🧪 جارٍ جلب المركبات الكيميائية من PubChem...",
         "ood_title": "⚠️ تنبيه: الصورة خارج النطاق أو غير واضحة",
-        "ood_body": "هذه الصورة لا تطابق بشكل موثوق أياً من الأنواع الـ 1,600 المدرَّبة (قد تكون جسماً غير نباتي، أو صورة مشوشة، أو نوعاً غير مدرج في قاعدة البيانات). يُرجى رفع صورة أوضح للأوراق أو الأزهار.",
+        "ood_body": "هذه الصورة لا تطابق بشكل موثوق أياً من الأنواع الـ 1,600 المدرَّبة. يُرجى رفع صورة أوضح للأوراق أو الأزهار.",
         "ood_override": "👁️ عرض أقرب تخمين على أي حال",
         "top5_title": "🎯 أكثر 5 أنواع متوقعة (دمج النموذجين Ensemble)",
         "gradcam_title": "🔍 تفسير قرار الذكاء الاصطناعي (خريطة تركيز Grad-CAM)",
@@ -268,11 +309,11 @@ st.markdown("""
       backdrop-filter: blur(14px);
       border: 1px solid rgba(74, 222, 128, 0.32);
       border-radius: 26px;
-      padding: 28px 24px;
+      padding: 26px 24px;
       text-align: center;
       color: white;
       margin-top: 8px;
-      margin-bottom: 26px;
+      margin-bottom: 22px;
       box-shadow: 0 20px 45px -15px rgba(16, 185, 129, 0.28);
       transition: transform 0.3s ease, border-color 0.3s ease;
   }
@@ -298,11 +339,6 @@ st.markdown("""
       margin-bottom: 18px;
       color: #fef3c7;
       box-shadow: 0 14px 32px rgba(217, 119, 6, 0.25);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-  .ood-alert-box:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 36px rgba(217, 119, 6, 0.35);
   }
   .model-card-primary {
       background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(17, 24, 39, 0.95) 100%);
@@ -312,12 +348,11 @@ st.markdown("""
       padding: 22px 22px;
       box-shadow: 0 12px 32px -10px rgba(0, 0, 0, 0.45);
       margin-bottom: 18px;
-      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+      transition: transform 0.25s ease, border-color 0.25s ease;
   }
   .model-card-primary:hover {
       transform: translateY(-3px);
       border-color: #4ade80;
-      box-shadow: 0 16px 38px -8px rgba(74, 222, 128, 0.22);
   }
   .bar-wrap {
       margin: 8px 0 10px 0;
@@ -367,7 +402,7 @@ st.markdown("""
       padding: 10px;
       text-align: center;
       margin-bottom: 10px;
-      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.24s ease, box-shadow 0.24s ease;
+      transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
   }
   .ref-card:hover {
       transform: translateY(-4px);
@@ -394,11 +429,6 @@ st.markdown("""
       margin: 14px 0;
       color: #fef2f2;
       box-shadow: 0 10px 26px rgba(220, 38, 38, 0.25);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-  .toxic-alert-box:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(220, 38, 38, 0.38);
   }
   .safe-alert-box {
       background: rgba(15, 23, 42, 0.85);
@@ -408,11 +438,6 @@ st.markdown("""
       margin: 14px 0;
       color: #a7f3d0;
       font-weight: 600;
-      transition: all 0.25s ease;
-  }
-  .safe-alert-box:hover {
-      border-color: #4ade80;
-      transform: translateY(-2px);
   }
   .feedback-box {
       background: rgba(15, 23, 42, 0.78);
@@ -420,10 +445,35 @@ st.markdown("""
       border-radius: 18px;
       padding: 18px 22px;
       margin-top: 16px;
-      transition: border-color 0.25s ease;
   }
-  .feedback-box:hover {
-      border-color: rgba(74, 222, 128, 0.45);
+  .morocco-map-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(6, 78, 59, 0.35));
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      border-radius: 20px;
+      padding: 18px;
+      margin: 10px 0 18px 0;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+  .region-pill-active {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.22);
+      border: 1px solid #34d399;
+      color: #a7f3d0;
+      border-radius: 999px;
+      padding: 5px 13px;
+      margin: 4px 5px 4px 0;
+      font-size: 0.82rem;
+      font-weight: 700;
+  }
+  .region-pill-inactive {
+      display: inline-block;
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      color: #94a3b8;
+      border-radius: 999px;
+      padding: 5px 13px;
+      margin: 4px 5px 4px 0;
+      font-size: 0.80rem;
   }
 
   .stButton>button {
@@ -433,7 +483,7 @@ st.markdown("""
       border: 1px solid rgba(148, 163, 184, 0.25) !important;
       color: #ffffff !important;
       padding: 11px 18px !important;
-      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, background 0.22s ease, border-color 0.22s ease !important;
+      transition: transform 0.18s ease, box-shadow 0.22s ease, background 0.22s ease, border-color 0.22s ease !important;
       width: 100% !important;
       cursor: pointer !important;
   }
@@ -445,19 +495,12 @@ st.markdown("""
   }
   .stButton>button:active {
       transform: translateY(1px) scale(0.98) !important;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
   }
-
   .st-key-wrong_btn_trigger button:hover {
       background: linear-gradient(135deg, #dc2626, #991b1b) !important;
       border-color: #f87171 !important;
-      transform: translateY(-3px) !important;
       box-shadow: 0 12px 24px -4px rgba(220, 38, 38, 0.55) !important;
   }
-  .st-key-wrong_btn_trigger button:active {
-      transform: translateY(1px) scale(0.98) !important;
-  }
-
   .st-key-analyse_btn button {
       background: linear-gradient(90deg, #16a34a 0%, #22c55e 50%, #10b981 100%) !important;
       border: 1.5px solid #4ade80 !important;
@@ -467,16 +510,11 @@ st.markdown("""
       font-weight: 800 !important;
       padding: 14px 24px !important;
       box-shadow: 0 8px 25px -4px rgba(34, 197, 94, 0.55) !important;
-      letter-spacing: 0.3px !important;
   }
   .st-key-analyse_btn button:hover {
       background: linear-gradient(90deg, #15803d 0%, #16a34a 50%, #059669 100%) !important;
       box-shadow: 0 14px 34px -2px rgba(74, 222, 128, 0.78) !important;
       transform: translateY(-3px) !important;
-  }
-  .st-key-analyse_btn button:active {
-      transform: translateY(2px) scale(0.97) !important;
-      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4) !important;
   }
 
   [data-testid="stFileUploader"] section {
@@ -489,22 +527,7 @@ st.markdown("""
   [data-testid="stFileUploader"] section:hover {
       border-color: #4ade80 !important;
       background: rgba(30, 41, 59, 0.65) !important;
-      transform: translateY(-2px);
   }
-  [data-testid="stFileUploader"] section button {
-      background: rgba(30, 41, 59, 0.95) !important;
-      border: 1px solid rgba(74, 222, 128, 0.4) !important;
-      border-radius: 12px !important;
-      color: #4ade80 !important;
-      font-weight: 700 !important;
-      transition: all 0.2s ease !important;
-  }
-  [data-testid="stFileUploader"] section button:hover {
-      background: #16a34a !important;
-      color: #ffffff !important;
-      transform: translateY(-2px);
-  }
-
   .preview-wrapper {
       position: relative;
       background: #ffffff;
@@ -515,11 +538,6 @@ st.markdown("""
       box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.6);
       border: 2px solid rgba(74, 222, 128, 0.35);
       overflow: hidden;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-  .preview-wrapper:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 38px -6px rgba(74, 222, 128, 0.25);
   }
   .preview-wrapper img {
       width: 100%;
@@ -539,7 +557,6 @@ st.markdown("""
       padding: 5px 14px;
       font-size: 0.8rem;
       font-weight: 800;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .stTabs [data-baseweb="tab-list"] {
@@ -551,9 +568,9 @@ st.markdown("""
       background-color: rgba(30, 41, 59, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
-      padding: 8px 20px;
+      padding: 9px 22px;
       color: #cbd5e1;
-      font-weight: 600;
+      font-weight: 700;
       transition: all 0.2s ease !important;
   }
   .stTabs [data-baseweb="tab"]:hover {
@@ -562,7 +579,7 @@ st.markdown("""
       transform: translateY(-2px);
   }
   .stTabs [aria-selected="true"] {
-      background: linear-gradient(135deg, rgba(22, 163, 74, 0.35), rgba(15, 23, 42, 0.85)) !important;
+      background: linear-gradient(135deg, rgba(22, 163, 74, 0.42), rgba(15, 23, 42, 0.88)) !important;
       border-color: #4ade80 !important;
       color: #ffffff !important;
   }
@@ -576,15 +593,9 @@ st.markdown("""
       border-radius: 15px;
       background: linear-gradient(100deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.78));
       border: 1px solid rgba(148, 163, 184, 0.22);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
       color: #f8fafc;
       font-size: 1.06rem;
       font-weight: 800;
-      transition: border-color 0.25s ease, transform 0.25s ease;
-  }
-  .plant-section-heading:hover {
-      border-color: rgba(74, 222, 128, 0.45);
-      transform: translateY(-1px);
   }
   .plant-section-heading .section-mark {
       display: inline-flex;
@@ -598,7 +609,6 @@ st.markdown("""
       color: #6ee7b7;
       flex: 0 0 32px;
   }
-
   .plant-info-card {
       position: relative;
       min-height: 90px;
@@ -608,11 +618,8 @@ st.markdown("""
       border-radius: 17px;
       padding: 16px 19px 17px 21px;
       margin: 6px 0 12px 0;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(14px);
-      overflow: hidden;
-      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
-      cursor: default;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+      transition: transform 0.24s ease, border-color 0.24s ease;
   }
   .plant-info-card::before {
       content: "";
@@ -623,17 +630,10 @@ st.markdown("""
       width: 4px;
       border-radius: 0 5px 5px 0;
       background: linear-gradient(180deg, #4ade80, #0d9488);
-      transition: width 0.2s ease, background 0.2s ease;
   }
   .plant-info-card:hover {
       transform: translateY(-4px);
       border-color: rgba(74, 222, 128, 0.65);
-      background: linear-gradient(145deg, rgba(20, 35, 55, 0.96) 0%, rgba(15, 65, 55, 0.72) 100%);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.38), 0 0 22px rgba(52, 211, 153, 0.16);
-  }
-  .plant-info-card:hover::before {
-      width: 5px;
-      background: linear-gradient(180deg, #86efac, #2dd4bf);
   }
   .plant-info-title {
       display: block;
@@ -641,7 +641,6 @@ st.markdown("""
       color: #6ee7b7;
       font-weight: 800;
       margin-bottom: 7px;
-      letter-spacing: .03em;
   }
   .plant-info-value {
       font-size: .97rem;
@@ -650,18 +649,12 @@ st.markdown("""
       overflow-wrap: anywhere;
       white-space: pre-wrap;
   }
-
   .chemical-panel {
       background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.78));
       border: 1px solid rgba(148, 163, 184, 0.24);
       border-radius: 18px;
       padding: 15px 17px;
       margin: 8px 0 16px 0;
-      transition: border-color 0.25s ease, transform 0.25s ease;
-  }
-  .chemical-panel:hover {
-      border-color: rgba(74, 222, 128, 0.5);
-      transform: translateY(-2px);
   }
   .chemical-pill {
       display: inline-block;
@@ -674,15 +667,7 @@ st.markdown("""
       color: #bae6fd;
       font-size: .84rem;
       font-weight: 700;
-      transition: all 0.2s ease;
   }
-  .chemical-pill:hover {
-      background: rgba(14, 116, 144, 0.45);
-      border-color: #38bdf8;
-      color: #ffffff;
-      transform: translateY(-2px);
-  }
-
   [dir="rtl"] .plant-info-card {
       padding: 16px 21px 17px 19px;
       text-align: right;
@@ -691,9 +676,6 @@ st.markdown("""
       left: auto;
       right: 0;
       border-radius: 5px 0 0 5px;
-  }
-  [dir="rtl"] .chemical-pill {
-      margin: 5px 0 5px 6px;
   }
   [dir="rtl"] .bar-wrap:hover {
       transform: translateX(-4px);
@@ -704,7 +686,7 @@ st.markdown("""
 top_left, top_right = st.columns([3.1, 1.1])
 with top_left:
     st.markdown(
-        '<div class="top-lang-badge">🌿 Dual-Model Ensemble AI &bull; 1,600 Species &bull; Grad-CAM &bull; PFAF &bull; PubChem</div>',
+        '<div class="top-lang-badge">🌿 Dual-Model Ensemble AI &bull; 1,600 Species &bull; Smart Search &bull; Morocco Map</div>',
         unsafe_allow_html=True
     )
 with top_right:
@@ -783,7 +765,17 @@ def load_assets():
     model_eff = tf.keras.models.load_model(str(eff_path), compile=False) if eff_path.exists() else None
 
     species_df = pd.read_csv(base_dir / "species_info.csv")
-    species_lookup = species_df.drop_duplicates(subset=["clean_scientific_name"]).set_index("clean_scientific_name").to_dict(orient="index")
+    species_df = species_df.drop_duplicates(subset=["clean_scientific_name"]).copy()
+    species_lookup = species_df.set_index("clean_scientific_name").to_dict(orient="index")
+
+    # بناء فهرس بحث سريع يشمل الاسم العلمي والشائع والدارجة المغربية والاستعمالات الطبية
+    search_cols = [
+        "clean_scientific_name", "Common Name", "common_name", "Family",
+        "moroccan_vernacular_name", "covid_vernacular",
+        "therapeutic_use_morocco", "Medicinal Properties", "Native Range"
+    ]
+    existing_cols = [c for c in search_cols if c in species_df.columns]
+    species_df["_search_blob"] = species_df[existing_cols].fillna("").astype(str).agg(" | ".join, axis=1).str.lower()
 
     ref_urls = {}
     ref_file = base_dir / "reference_urls_1600.json"
@@ -812,9 +804,110 @@ def load_assets():
     except Exception:
         grad_model = None
 
-    return model_mob, model_eff, all_species, species_lookup, ref_urls, grad_model
+    return model_mob, model_eff, all_species, species_df, species_lookup, ref_urls, grad_model
 
-model_1600, model_effnet, all_species, species_lookup, ref_urls_map, gradcam_backbone = load_assets()
+model_1600, model_effnet, all_species, species_df, species_lookup, ref_urls_map, gradcam_backbone = load_assets()
+
+def clean_val(val, default="—"):
+    if val is None or (isinstance(val, float) and np.isnan(val)):
+        return default
+    s = str(val).strip()
+    return s if s and s.lower() not in ("nan", "none", "null") else default
+
+def infer_morocco_regions(info: dict):
+    """تحديد أقاليم الانتشار الجغرافي في المغرب انطلاقاً من الدراسات الميدانية والموطن الأصلي."""
+    sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
+    covid_doc = bool(info.get("documented_in_morocco_national_covid", False))
+    native_range = clean_val(info.get("Native Range"), "").lower()
+    use_mor = clean_val(info.get("therapeutic_use_morocco"), "").lower()
+
+    regions = set()
+    if sahara_doc or any(k in native_range for k in ("sahara", "desert", "arid", "mauritania")):
+        regions.add("sahara")
+        regions.add("souss")
+    if any(k in native_range for k in ("atlas", "mountain", "alpine", "montane")):
+        regions.add("high_atlas")
+        regions.add("middle_atlas")
+    if any(k in native_range for k in ("mediterranean", "spain", "portugal", "iberia", "algeria", "tunisia", "north africa")):
+        regions.add("rif")
+        regions.add("atlantic_plains")
+        regions.add("middle_atlas")
+    if "morocco" in native_range or "maroc" in native_range:
+        regions.update(["high_atlas", "souss", "rif", "atlantic_plains"])
+    if covid_doc and not regions:
+        regions.update(["rif", "atlantic_plains", "middle_atlas", "high_atlas", "souss"])
+    if "souss" in use_mor or "anti-atlas" in native_range:
+        regions.add("souss")
+
+    is_present = len(regions) > 0
+    return is_present, regions
+
+def render_morocco_distribution_map(info: dict, lang: str, page_dir: str):
+    is_present, active_regions = infer_morocco_regions(info)
+
+    region_labels = {
+        "rif": {"ar": "الريف والشمال", "fr": "Rif & Nord", "en": "Rif & North"},
+        "atlantic_plains": {"ar": "السهول الأطلسية والهضاب", "fr": "Plaines Atlantiques", "en": "Atlantic Plains"},
+        "middle_atlas": {"ar": "الأطلس المتوسط والشرق", "fr": "Moyen Atlas & Oriental", "en": "Middle Atlas & East"},
+        "high_atlas": {"ar": "الأطلس الكبير", "fr": "Haut Atlas", "en": "High Atlas"},
+        "souss": {"ar": "سوس ماسة والأطلس الصغير", "fr": "Souss-Massa & Anti-Atlas", "en": "Souss-Massa & Anti-Atlas"},
+        "sahara": {"ar": "الأقاليم الجنوبية والصحراء", "fr": "Sahara Marocain", "en": "Moroccan Sahara"},
+    }
+
+    def r_style(code):
+        if code in active_regions:
+            return 'fill="#10b981" fill-opacity="0.72" stroke="#6ee7b7" stroke-width="2"'
+        return 'fill="#1e293b" fill-opacity="0.75" stroke="#475569" stroke-width="1.2"'
+
+    svg_map = f"""
+    <svg viewBox="0 0 360 360" style="width:100%;max-width:310px;height:auto;display:block;margin:0 auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,0.45));">
+      <!-- البحر والمحيط -->
+      <rect x="0" y="0" width="360" height="360" rx="18" fill="#061224" />
+      <!-- الريف والشمال -->
+      <path d="M 215,24 L 268,32 L 282,58 L 235,68 L 204,55 Z" {r_style("rif")} />
+      <!-- السهول الأطلسية -->
+      <path d="M 204,55 L 235,68 L 222,122 L 168,136 L 178,92 Z" {r_style("atlantic_plains")} />
+      <!-- الأطلس المتوسط والشرق -->
+      <path d="M 235,68 L 282,58 L 315,105 L 275,142 L 222,122 Z" {r_style("middle_atlas")} />
+      <!-- الأطلس الكبير -->
+      <path d="M 168,136 L 222,122 L 275,142 L 245,176 L 154,168 Z" {r_style("high_atlas")} />
+      <!-- سوس ماسة والأطلس الصغير -->
+      <path d="M 154,168 L 245,176 L 218,215 L 132,208 L 142,182 Z" {r_style("souss")} />
+      <!-- الصحراء المغربية -->
+      <path d="M 132,208 L 218,215 L 178,262 L 118,332 L 58,332 L 94,256 Z" {r_style("sahara")} />
+      <!-- أسماء مختصرة على الخريطة -->
+      <text x="242" y="49" fill="#f8fafc" font-size="9" font-weight="700" text-anchor="middle">Rif</text>
+      <text x="272" y="104" fill="#f8fafc" font-size="9" font-weight="700" text-anchor="middle">Moyen Atlas</text>
+      <text x="215" y="152" fill="#f8fafc" font-size="9.5" font-weight="800" text-anchor="middle">Haut Atlas</text>
+      <text x="178" y="194" fill="#f8fafc" font-size="9" font-weight="700" text-anchor="middle">Souss-Massa</text>
+      <text x="135" y="274" fill="#f8fafc" font-size="10" font-weight="800" text-anchor="middle">Sahara</text>
+    </svg>
+    """
+
+    pills_html = []
+    for code, names in region_labels.items():
+        cls = "region-pill-active" if code in active_regions else "region-pill-inactive"
+        prefix = "✅ " if code in active_regions else "• "
+        pills_html.append(f'<span class="{cls}">{prefix}{html.escape(names[lang])}</span>')
+
+    status_note = tr("map_regions_lbl") if is_present else tr("map_not_native")
+
+    st.markdown(
+        f'<div dir="{page_dir}" class="plant-section-heading">'
+        f'<span class="section-mark">🗺️</span>{html.escape(tr("map_title"))}</div>',
+        unsafe_allow_html=True,
+    )
+    mc1, mc2 = st.columns([1.05, 1.45], gap="medium")
+    with mc1:
+        st.markdown(f'<div class="morocco-map-card">{svg_map}</div>', unsafe_allow_html=True)
+    with mc2:
+        st.markdown(
+            f'<div dir="{page_dir}" class="morocco-map-card" style="height:calc(100% - 28px);display:flex;flex-direction:column;justify-content:center;">'
+            f'<div style="font-size:0.95rem;font-weight:800;color:#6ee7b7;margin-bottom:10px;">{html.escape(status_note)}</div>'
+            f'<div>{"".join(pills_html)}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
 def generate_gradcam_overlay(img: Image.Image, top_class_idx: int):
     try:
@@ -879,8 +972,6 @@ def get_reference_photo_url(scientific_name: str):
 
 def predict_top5_ensemble(img: Image.Image):
     rgb = img.convert("RGB")
-
-    # 1. MobileNetV2 (192x192 + TTA)
     img_192 = rgb.resize((192, 192))
     flip_192 = ImageOps.mirror(img_192)
     batch_192 = np.stack([
@@ -889,7 +980,6 @@ def predict_top5_ensemble(img: Image.Image):
     ], axis=0)
     probs_mob = np.mean(model_1600.predict(batch_192, verbose=0), axis=0)
 
-    # 2. EfficientNetV2-B0 (224x224 + TTA)
     if model_effnet is not None:
         img_224 = rgb.resize((224, 224))
         flip_224 = ImageOps.mirror(img_224)
@@ -898,7 +988,6 @@ def predict_top5_ensemble(img: Image.Image):
             np.array(flip_224, dtype=np.float32),
         ], axis=0)
         probs_eff = np.mean(model_effnet.predict(batch_224, verbose=0), axis=0)
-        # التجميع الموزون المثالي (0.70 MobileNetV2 + 0.30 EfficientNetV2-B0)
         probs = 0.70 * probs_mob + 0.30 * probs_eff
     else:
         probs = probs_mob
@@ -937,12 +1026,6 @@ def get_chemical_compounds(scientific_name: str):
         return names[:5]
     except Exception:
         return []
-
-def clean_val(val, default="—"):
-    if val is None or (isinstance(val, float) and np.isnan(val)):
-        return default
-    s = str(val).strip()
-    return s if s and s.lower() not in ("nan", "none", "null") else default
 
 def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     token = st.secrets.get("GITHUB_TOKEN", "")
@@ -995,6 +1078,190 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     with urllib.request.urlopen(req2) as r:
         return json.loads(r.read())["html_url"]
 
+def render_full_botanical_profile(best_sp: str, best_prob: float, page_dir: str, chemicals: list):
+    info = species_lookup.get(best_sp, {})
+
+    sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
+    sahara_toxic = bool(info.get("is_toxic_morocco_study", False))
+    covid_doc = bool(info.get("documented_in_morocco_national_covid", False))
+    covid_toxic = bool(info.get("covid_toxic", False))
+    hazards_raw = clean_val(info.get("Known Hazards"), "")
+
+    toxic_msgs = []
+    if sahara_toxic:
+        toxic_msgs.append("• دراسة الصحراء المغربية: مصنفة كنبتة سامة في الاستعمال التقليدي المحلي.")
+    if covid_toxic:
+        toxic_msgs.append("• الدراسة الوطنية المغربية: ورد تحذير من سميتها.")
+    if hazards_raw:
+        hazards_tr = translate_botanical_text(hazards_raw, LANG)
+        toxic_msgs.append(f"• PFAF: {hazards_tr}")
+
+    if toxic_msgs:
+        joined_tox = "<br>".join(html.escape(m) for m in toxic_msgs)
+        st.markdown(
+            f'<div class="toxic-alert-box" dir="{page_dir}">'
+            f'<div style="font-weight:800;font-size:1.02rem;margin-bottom:6px;">{tr("toxic_banner")}</div>'
+            f'<div style="font-size:0.93rem;line-height:1.65;">{joined_tox}</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(f'<div class="safe-alert-box" dir="{page_dir}">{tr("safe_banner")}</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        f'<div dir="{page_dir}" class="plant-section-heading">'
+        f'<span class="section-mark">🌿</span>{html.escape(tr("plant_id"))}</div>',
+        unsafe_allow_html=True,
+    )
+
+    vernacular_parts = []
+    if sahara_doc:
+        v_s = clean_val(info.get("moroccan_vernacular_name"), "")
+        if v_s:
+            vernacular_parts.append(f"{v_s} (الصحراء)")
+    if covid_doc:
+        v_c = clean_val(info.get("covid_vernacular"), "")
+        if v_c:
+            vernacular_parts.append(f"{v_c} (وطني)")
+    vernacular_str = " | ".join(vernacular_parts) if vernacular_parts else "—"
+
+    common_raw = clean_val(info.get("Common Name") or info.get("common_name"))
+    common_tr = translate_botanical_text(common_raw, LANG) if common_raw != "—" else "—"
+
+    id_c1, id_c2 = st.columns(2, gap="medium")
+    with id_c1:
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-title">{tr("scientific")}</div>'
+            f'<div class="plant-info-value"><i dir="ltr">{html.escape(best_sp)}</i></div></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-title">{tr("vernacular")}</div>'
+            f'<div class="plant-info-value">{html.escape(vernacular_str)}</div></div>',
+            unsafe_allow_html=True,
+        )
+    with id_c2:
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-title">{tr("common")}</div>'
+            f'<div class="plant-info-value">{html.escape(common_tr)}</div></div>',
+            unsafe_allow_html=True,
+        )
+        if best_prob is not None:
+            st.markdown(
+                f'<div dir="{page_dir}" class="plant-info-card">'
+                f'<div class="plant-info-title">{tr("confidence")}</div>'
+                f'<div class="plant-info-value"><span dir="ltr" style="color:#4ade80;font-weight:800;">{best_prob*100:.1f}%</span></div></div>',
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                f'<div dir="{page_dir}" class="plant-info-card">'
+                f'<div class="plant-info-title">{tr("family")}</div>'
+                f'<div class="plant-info-value" dir="ltr">{html.escape(clean_val(info.get("Family")))}</div></div>',
+                unsafe_allow_html=True,
+            )
+
+    # خريطة الانتشار الجغرافي في المغرب
+    render_morocco_distribution_map(info, LANG, page_dir)
+
+    st.markdown(
+        f'<div dir="{page_dir}" class="plant-section-heading">'
+        f'<span class="section-mark">🇲🇦</span>{html.escape(tr("morocco_sec"))}</div>',
+        unsafe_allow_html=True,
+    )
+    if sahara_doc or covid_doc:
+        m_cols = st.columns(2 if (sahara_doc and covid_doc) else 1, gap="medium")
+        col_i = 0
+        if sahara_doc:
+            s_txt = (
+                f"الجزء المستعمل: {clean_val(info.get('part_used_morocco'))}\n"
+                f"التحضير: {clean_val(info.get('preparation_morocco'))}\n"
+                f"الاستعمال العلاجي: {clean_val(info.get('therapeutic_use_morocco'))}"
+            )
+            with m_cols[col_i]:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("sahara_lbl")}</div>'
+                    f'<div class="plant-info-value">{html.escape(s_txt)}</div></div>',
+                    unsafe_allow_html=True,
+                )
+            col_i += 1
+        if covid_doc:
+            c_txt = (
+                f"الجزء المستعمل: {clean_val(info.get('covid_part'))}\n"
+                f"طريقة الاستعمال: {clean_val(info.get('covid_use_mode'))}\n"
+                f"عدد الاستشهادات: {clean_val(info.get('covid_ntc'))}"
+            )
+            with m_cols[col_i]:
+                st.markdown(
+                    f'<div dir="{page_dir}" class="plant-info-card">'
+                    f'<div class="plant-info-title">{tr("covid_lbl")}</div>'
+                    f'<div class="plant-info-value">{html.escape(c_txt)}</div></div>',
+                    unsafe_allow_html=True,
+                )
+    else:
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-value">{html.escape(tr("not_morocco"))}</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    st.markdown(
+        f'<div dir="{page_dir}" class="plant-section-heading">'
+        f'<span class="section-mark">📋</span>{html.escape(tr("plant_info"))}</div>',
+        unsafe_allow_html=True,
+    )
+    fam_val = clean_val(info.get("Family"))
+    med_r = clean_val(info.get("Medicinal Rating"))
+    edib_r = clean_val(info.get("Edibility Rating"))
+    range_val = translate_botanical_text(clean_val(info.get("Native Range")), LANG)
+    props_val = translate_botanical_text(clean_val(info.get("Medicinal Properties")), LANG)
+
+    p_c1, p_c2 = st.columns(2, gap="medium")
+    with p_c1:
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-title">{tr("family")}</div>'
+            f'<div class="plant-info-value" dir="ltr">{html.escape(fam_val)}</div></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-title">{tr("range")}</div>'
+            f'<div class="plant-info-value">{html.escape(range_val)}</div></div>',
+            unsafe_allow_html=True,
+        )
+    with p_c2:
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-title">{tr("med_rating")} &bull; {tr("edib_rating")}</div>'
+            f'<div class="plant-info-value" dir="ltr">Medicinal: {html.escape(med_r)} / 5  |  Edibility: {html.escape(edib_r)} / 5</div></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-info-card">'
+            f'<div class="plant-info-title">{tr("properties")}</div>'
+            f'<div class="plant-info-value">{html.escape(props_val[:1800])}</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    if chemicals:
+        st.markdown(
+            f'<div dir="{page_dir}" class="plant-section-heading">'
+            f'<span class="section-mark">🧪</span>{html.escape(tr("chemicals"))}</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f'<div dir="{page_dir}" class="chemical-panel">'
+            f'<div style="color:#94a3b8;font-size:.86rem;margin-bottom:8px;">{html.escape(tr("chem_note"))}</div>'
+            + " ".join(f'<span dir="ltr" class="chemical-pill">{html.escape(str(n))}</span>' for n in chemicals)
+            + '</div>',
+            unsafe_allow_html=True,
+        )
+
 for k in ("top5", "feedback_sent", "img_bytes", "chemicals", "ref_photos", "is_ood", "ood_override", "gradcam_pair"):
     if k not in st.session_state:
         st.session_state[k] = None
@@ -1009,371 +1276,286 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-col_results, col_input = st.columns([2.25, 1], gap="large")
+mode_photo_tab, mode_search_tab = st.tabs([tr("mode_photo"), tr("mode_search")])
 
-with col_input:
-    st.markdown(f'<div dir="{page_dir}"><h4>{tr("input")}</h4></div>', unsafe_allow_html=True)
-    tab_up, tab_cam = st.tabs([tr("upload_tab"), tr("camera_tab")])
-    with tab_up:
-        uploaded = st.file_uploader(
-            tr("upload"),
-            type=["jpg", "jpeg", "png", "webp", "jfif"],
-            label_visibility="collapsed"
-        )
-    with tab_cam:
-        camera = st.camera_input(tr("capture"), label_visibility="collapsed")
-    img_source = uploaded or camera
+with mode_photo_tab:
+    col_results, col_input = st.columns([2.25, 1], gap="large")
 
-    if img_source:
-        image = Image.open(img_source)
-        image = ImageOps.exif_transpose(image)
-        prev_buf = _io.BytesIO()
-        image.convert("RGB").save(prev_buf, format="JPEG", quality=90)
-        prev_b64 = base64.b64encode(prev_buf.getvalue()).decode("utf-8")
-        st.markdown(f"""
-        <div class="preview-wrapper">
-          <div class="ready-pill">{tr("ready_img")}</div>
-          <img src="data:image/jpeg;base64,{prev_b64}" alt="Plant Preview" />
-        </div>
-        """, unsafe_allow_html=True)
+    with col_input:
+        st.markdown(f'<div dir="{page_dir}"><h4>{tr("input")}</h4></div>', unsafe_allow_html=True)
+        tab_up, tab_cam = st.tabs([tr("upload_tab"), tr("camera_tab")])
+        with tab_up:
+            uploaded = st.file_uploader(
+                tr("upload"),
+                type=["jpg", "jpeg", "png", "webp", "jfif"],
+                label_visibility="collapsed"
+            )
+        with tab_cam:
+            camera = st.camera_input(tr("capture"), label_visibility="collapsed")
+        img_source = uploaded or camera
 
-    st.markdown("<div style='height:4px;'></div>", unsafe_allow_html=True)
-    if st.button(tr("analyse"), key="analyse_btn", width="stretch"):
-        if img_source is None:
-            st.warning(tr("upload_first"))
-        else:
+        if img_source:
             image = Image.open(img_source)
             image = ImageOps.exif_transpose(image)
-            buf = _io.BytesIO()
-            image.convert("RGB").save(buf, format="JPEG", quality=90)
-            st.session_state.img_bytes = buf.getvalue()
+            prev_buf = _io.BytesIO()
+            image.convert("RGB").save(prev_buf, format="JPEG", quality=90)
+            prev_b64 = base64.b64encode(prev_buf.getvalue()).decode("utf-8")
+            st.markdown(f"""
+            <div class="preview-wrapper">
+              <div class="ready-pill">{tr("ready_img")}</div>
+              <img src="data:image/jpeg;base64,{prev_b64}" alt="Plant Preview" />
+            </div>
+            """, unsafe_allow_html=True)
 
-            with st.spinner(tr("running")):
-                top5, top1_idx, is_ood, max_prob, norm_entropy = predict_top5_ensemble(image)
-                st.session_state.top5 = top5
-                st.session_state.is_ood = is_ood
-                st.session_state.ood_override = False
-                st.session_state.feedback_sent = False
-                st.session_state.gradcam_pair = generate_gradcam_overlay(image, top1_idx)
+        st.markdown("<div style='height:4px;'></div>", unsafe_allow_html=True)
+        if st.button(tr("analyse"), key="analyse_btn", width="stretch"):
+            if img_source is None:
+                st.warning(tr("upload_first"))
+            else:
+                image = Image.open(img_source)
+                image = ImageOps.exif_transpose(image)
+                buf = _io.BytesIO()
+                image.convert("RGB").save(buf, format="JPEG", quality=90)
+                st.session_state.img_bytes = buf.getvalue()
 
-            with st.spinner(tr("fetching")):
-                st.session_state.chemicals = get_chemical_compounds(top5[0][0])
-                st.session_state.ref_photos = [
-                    (sp_name, prob, get_reference_photo_url(sp_name))
-                    for sp_name, prob in top5[:3]
-                ]
+                with st.spinner(tr("running")):
+                    top5, top1_idx, is_ood, max_prob, norm_entropy = predict_top5_ensemble(image)
+                    st.session_state.top5 = top5
+                    st.session_state.is_ood = is_ood
+                    st.session_state.ood_override = False
+                    st.session_state.feedback_sent = False
+                    st.session_state.gradcam_pair = generate_gradcam_overlay(image, top1_idx)
 
-with col_results:
-    if st.session_state.top5 is not None:
-        top5 = st.session_state.top5
-        best_sp, best_prob = top5[0]
-        info = species_lookup.get(best_sp, {})
+                with st.spinner(tr("fetching")):
+                    st.session_state.chemicals = get_chemical_compounds(top5[0][0])
+                    st.session_state.ref_photos = [
+                        (sp_name, prob, get_reference_photo_url(sp_name))
+                        for sp_name, prob in top5[:3]
+                    ]
 
-        if st.session_state.is_ood and not st.session_state.ood_override:
-            st.markdown(
-                f'<div class="ood-alert-box" dir="{page_dir}">'
-                f'<div style="font-size:1.12rem;font-weight:800;margin-bottom:8px;">{tr("ood_title")}</div>'
-                f'<div style="font-size:0.95rem;line-height:1.65;">{tr("ood_body")}</div>'
-                f'</div>',
-                unsafe_allow_html=True,
-            )
-            if st.button(tr("ood_override"), key="ood_override_btn", width="stretch"):
-                st.session_state.ood_override = True
-                st.rerun()
-        else:
-            bars_parts = []
-            for idx, (sp_name, prob) in enumerate(top5):
-                fill_cls = "bar-fill-top" if idx == 0 else "bar-fill-sub"
-                width_pct = max(prob * 100.0, 2.5)
-                bars_parts.append(
-                    f'<div class="bar-wrap">'
-                    f'<div class="bar-header"><span dir="ltr"><i>{html.escape(sp_name)}</i></span><span dir="ltr" style="color:#4ade80;">{prob*100:.1f}%</span></div>'
-                    f'<div class="bar-track"><div class="{fill_cls}" style="width:{width_pct:.1f}%"></div></div>'
-                    f'</div>'
-                )
+    with col_results:
+        if st.session_state.top5 is not None:
+            top5 = st.session_state.top5
+            best_sp, best_prob = top5[0]
 
-            st.markdown(
-                f'<div class="model-card-primary" dir="{page_dir}">'
-                f'<div style="font-size:1.15rem;font-weight:800;color:#f8fafc;margin-bottom:12px;">{tr("top5_title")}</div>'
-                f'{"".join(bars_parts)}'
-                f'</div>',
-                unsafe_allow_html=True,
-            )
-
-            orig_b64, heat_b64 = st.session_state.gradcam_pair or (None, None)
-            if orig_b64 and heat_b64:
+            if st.session_state.is_ood and not st.session_state.ood_override:
                 st.markdown(
-                    f'<div dir="{page_dir}" class="plant-section-heading">'
-                    f'<span class="section-mark">🔍</span>{html.escape(tr("gradcam_title"))}</div>',
-                    unsafe_allow_html=True,
-                )
-                gc1, gc2 = st.columns(2, gap="medium")
-                with gc1:
-                    st.markdown(
-                        f'<div class="ref-card">'
-                        f'<img src="data:image/jpeg;base64,{orig_b64}" alt="Original"/>'
-                        f'<div class="ref-caption">{html.escape(tr("gradcam_orig"))}</div>'
-                        f'</div>',
-                        unsafe_allow_html=True,
-                    )
-                with gc2:
-                    st.markdown(
-                        f'<div class="ref-card">'
-                        f'<img src="data:image/jpeg;base64,{heat_b64}" alt="Grad-CAM"/>'
-                        f'<div class="ref-caption">{html.escape(tr("gradcam_heat"))}</div>'
-                        f'</div>',
-                        unsafe_allow_html=True,
-                    )
-                st.markdown(
-                    f'<div dir="{page_dir}" style="font-size:0.86rem;color:#94a3b8;margin-bottom:12px;">'
-                    f'{html.escape(tr("gradcam_desc"))}</div>',
-                    unsafe_allow_html=True,
-                )
-
-            ref_photos = st.session_state.ref_photos or []
-            valid_refs = [r for r in ref_photos if r[2]]
-            if valid_refs:
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-section-heading">'
-                    f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
-                    unsafe_allow_html=True,
-                )
-                ref_cols = st.columns(len(valid_refs), gap="medium")
-                for idx, (sp_name, prob, ref_url) in enumerate(valid_refs):
-                    with ref_cols[idx]:
-                        st.markdown(
-                            f'<div class="ref-card">'
-                            f'<img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>'
-                            f'<div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>'
-                            f'</div>',
-                            unsafe_allow_html=True,
-                        )
-
-            sahara_doc = bool(info.get("documented_in_morocco_sahara", False))
-            sahara_toxic = bool(info.get("is_toxic_morocco_study", False))
-            covid_doc = bool(info.get("documented_in_morocco_national_covid", False))
-            covid_toxic = bool(info.get("covid_toxic", False))
-            hazards_raw = clean_val(info.get("Known Hazards"), "")
-
-            toxic_msgs = []
-            if sahara_toxic:
-                toxic_msgs.append("• دراسة الصحراء المغربية: مصنفة كنبتة سامة في الاستعمال التقليدي المحلي.")
-            if covid_toxic:
-                toxic_msgs.append("• الدراسة الوطنية المغربية: ورد تحذير من سميتها.")
-            if hazards_raw:
-                hazards_tr = translate_botanical_text(hazards_raw, LANG)
-                toxic_msgs.append(f"• PFAF: {hazards_tr}")
-
-            if toxic_msgs:
-                joined_tox = "<br>".join(html.escape(m) for m in toxic_msgs)
-                st.markdown(
-                    f'<div class="toxic-alert-box" dir="{page_dir}">'
-                    f'<div style="font-weight:800;font-size:1.02rem;margin-bottom:6px;">{tr("toxic_banner")}</div>'
-                    f'<div style="font-size:0.93rem;line-height:1.65;">{joined_tox}</div>'
+                    f'<div class="ood-alert-box" dir="{page_dir}">'
+                    f'<div style="font-size:1.12rem;font-weight:800;margin-bottom:8px;">{tr("ood_title")}</div>'
+                    f'<div style="font-size:0.95rem;line-height:1.65;">{tr("ood_body")}</div>'
                     f'</div>',
                     unsafe_allow_html=True,
                 )
+                if st.button(tr("ood_override"), key="ood_override_btn", width="stretch"):
+                    st.session_state.ood_override = True
+                    st.rerun()
             else:
-                st.markdown(f'<div class="safe-alert-box" dir="{page_dir}">{tr("safe_banner")}</div>', unsafe_allow_html=True)
-
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-section-heading">'
-                f'<span class="section-mark">🌿</span>{html.escape(tr("plant_id"))}</div>',
-                unsafe_allow_html=True,
-            )
-
-            vernacular_parts = []
-            if sahara_doc:
-                v_s = clean_val(info.get("moroccan_vernacular_name"), "")
-                if v_s:
-                    vernacular_parts.append(f"{v_s} (الصحراء)")
-            if covid_doc:
-                v_c = clean_val(info.get("covid_vernacular"), "")
-                if v_c:
-                    vernacular_parts.append(f"{v_c} (وطني)")
-            vernacular_str = " | ".join(vernacular_parts) if vernacular_parts else "—"
-
-            common_raw = clean_val(info.get("Common Name") or info.get("common_name"))
-            common_tr = translate_botanical_text(common_raw, LANG) if common_raw != "—" else "—"
-
-            id_c1, id_c2 = st.columns(2, gap="medium")
-            with id_c1:
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("scientific")}</div>'
-                    f'<div class="plant-info-value"><i dir="ltr">{html.escape(best_sp)}</i></div></div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("vernacular")}</div>'
-                    f'<div class="plant-info-value">{html.escape(vernacular_str)}</div></div>',
-                    unsafe_allow_html=True,
-                )
-            with id_c2:
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("common")}</div>'
-                    f'<div class="plant-info-value">{html.escape(common_tr)}</div></div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("confidence")}</div>'
-                    f'<div class="plant-info-value"><span dir="ltr" style="color:#4ade80;font-weight:800;">{best_prob*100:.1f}%</span></div></div>',
-                    unsafe_allow_html=True,
-                )
-
-            st.markdown(
-                f'<div dir="{page_dir}" class="plant-section-heading">'
-                f'<span class="section-mark">🇲🇦</span>{html.escape(tr("morocco_sec"))}</div>',
-                unsafe_allow_html=True,
-            )
-            if sahara_doc or covid_doc:
-                m_cols = st.columns(2 if (sahara_doc and covid_doc) else 1, gap="medium")
-                col_i = 0
-                if sahara_doc:
-                    s_txt = (
-                        f"الجزء المستعمل: {clean_val(info.get('part_used_morocco'))}\n"
-                        f"التحضير: {clean_val(info.get('preparation_morocco'))}\n"
-                        f"الاستعمال العلاجي: {clean_val(info.get('therapeutic_use_morocco'))}"
+                bars_parts = []
+                for idx, (sp_name, prob) in enumerate(top5):
+                    fill_cls = "bar-fill-top" if idx == 0 else "bar-fill-sub"
+                    width_pct = max(prob * 100.0, 2.5)
+                    bars_parts.append(
+                        f'<div class="bar-wrap">'
+                        f'<div class="bar-header"><span dir="ltr"><i>{html.escape(sp_name)}</i></span><span dir="ltr" style="color:#4ade80;">{prob*100:.1f}%</span></div>'
+                        f'<div class="bar-track"><div class="{fill_cls}" style="width:{width_pct:.1f}%"></div></div>'
+                        f'</div>'
                     )
-                    with m_cols[col_i]:
+
+                st.markdown(
+                    f'<div class="model-card-primary" dir="{page_dir}">'
+                    f'<div style="font-size:1.15rem;font-weight:800;color:#f8fafc;margin-bottom:12px;">{tr("top5_title")}</div>'
+                    f'{"".join(bars_parts)}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+                orig_b64, heat_b64 = st.session_state.gradcam_pair or (None, None)
+                if orig_b64 and heat_b64:
+                    st.markdown(
+                        f'<div dir="{page_dir}" class="plant-section-heading">'
+                        f'<span class="section-mark">🔍</span>{html.escape(tr("gradcam_title"))}</div>',
+                        unsafe_allow_html=True,
+                    )
+                    gc1, gc2 = st.columns(2, gap="medium")
+                    with gc1:
                         st.markdown(
-                            f'<div dir="{page_dir}" class="plant-info-card">'
-                            f'<div class="plant-info-title">{tr("sahara_lbl")}</div>'
-                            f'<div class="plant-info-value">{html.escape(s_txt)}</div></div>',
+                            f'<div class="ref-card">'
+                            f'<img src="data:image/jpeg;base64,{orig_b64}" alt="Original"/>'
+                            f'<div class="ref-caption">{html.escape(tr("gradcam_orig"))}</div>'
+                            f'</div>',
                             unsafe_allow_html=True,
                         )
-                    col_i += 1
-                if covid_doc:
-                    c_txt = (
-                        f"الجزء المستعمل: {clean_val(info.get('covid_part'))}\n"
-                        f"طريقة الاستعمال: {clean_val(info.get('covid_use_mode'))}\n"
-                        f"عدد الاستشهادات: {clean_val(info.get('covid_ntc'))}"
-                    )
-                    with m_cols[col_i]:
+                    with gc2:
                         st.markdown(
-                            f'<div dir="{page_dir}" class="plant-info-card">'
-                            f'<div class="plant-info-title">{tr("covid_lbl")}</div>'
-                            f'<div class="plant-info-value">{html.escape(c_txt)}</div></div>',
+                            f'<div class="ref-card">'
+                            f'<img src="data:image/jpeg;base64,{heat_b64}" alt="Grad-CAM"/>'
+                            f'<div class="ref-caption">{html.escape(tr("gradcam_heat"))}</div>'
+                            f'</div>',
                             unsafe_allow_html=True,
                         )
-            else:
+                    st.markdown(
+                        f'<div dir="{page_dir}" style="font-size:0.86rem;color:#94a3b8;margin-bottom:12px;">'
+                        f'{html.escape(tr("gradcam_desc"))}</div>',
+                        unsafe_allow_html=True,
+                    )
+
+                ref_photos = st.session_state.ref_photos or []
+                valid_refs = [r for r in ref_photos if r[2]]
+                if valid_refs:
+                    st.markdown(
+                        f'<div dir="{page_dir}" class="plant-section-heading">'
+                        f'<span class="section-mark">🖼️</span>{html.escape(tr("ref_gallery"))}</div>',
+                        unsafe_allow_html=True,
+                    )
+                    ref_cols = st.columns(len(valid_refs), gap="medium")
+                    for idx, (sp_name, prob, ref_url) in enumerate(valid_refs):
+                        with ref_cols[idx]:
+                            st.markdown(
+                                f'<div class="ref-card">'
+                                f'<img src="{html.escape(ref_url)}" alt="{html.escape(sp_name)}"/>'
+                                f'<div class="ref-caption" dir="ltr"><i>{html.escape(sp_name)}</i> ({prob*100:.1f}%)</div>'
+                                f'</div>',
+                                unsafe_allow_html=True,
+                            )
+
+                render_full_botanical_profile(best_sp, best_prob, page_dir, st.session_state.chemicals or [])
+
                 st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-value">{html.escape(tr("not_morocco"))}</div></div>',
+                    f'<div class="feedback-box" dir="{page_dir}">'
+                    f'<div style="font-size:1.05rem;font-weight:700;color:#4ade80;margin-bottom:4px;">{tr("evaluate")}</div>'
+                    f'<div style="font-size:0.92rem;color:#cbd5e1;">{tr("evaluate_help")}</div>'
+                    f'</div>',
                     unsafe_allow_html=True,
                 )
+                st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
 
+                if not st.session_state.feedback_sent:
+                    fc1, fc2 = st.columns(2, gap="medium")
+                    with fc1:
+                        if st.button(tr("yes"), width="stretch"):
+                            st.session_state.feedback_sent = "correct"
+                            st.rerun()
+                    with fc2:
+                        if st.button(tr("no"), width="stretch", key="wrong_btn_trigger"):
+                            st.session_state.feedback_sent = "wrong"
+                            st.rerun()
+                elif st.session_state.feedback_sent == "correct":
+                    st.success(tr("thanks"))
+                elif st.session_state.feedback_sent == "wrong":
+                    st.markdown(f'<div dir="{page_dir}"><b>{tr("select_true")}</b></div>', unsafe_allow_html=True)
+                    other_candidates = [""] + [sp for sp, _ in top5[1:]]
+                    chosen_cand = st.selectbox("Candidates", other_candidates, label_visibility="collapsed")
+                    typed_sp = st.text_input(tr("custom_sp"))
+                    final_true = typed_sp.strip() if typed_sp.strip() else chosen_cand
+                    if final_true and st.button(tr("submit"), width="stretch"):
+                        with st.spinner(tr("saving")):
+                            try:
+                                save_correction_to_github(best_sp, final_true, st.session_state.img_bytes)
+                                st.session_state.feedback_sent = "done"
+                                st.rerun()
+                            except Exception as e:
+                                st.error(tr("save_error") + str(e))
+                elif st.session_state.feedback_sent == "done":
+                    st.success(tr("saved"))
+        else:
             st.markdown(
-                f'<div dir="{page_dir}" class="plant-section-heading">'
-                f'<span class="section-mark">📋</span>{html.escape(tr("plant_info"))}</div>',
-                unsafe_allow_html=True,
-            )
-            fam_val = clean_val(info.get("Family"))
-            med_r = clean_val(info.get("Medicinal Rating"))
-            edib_r = clean_val(info.get("Edibility Rating"))
-            range_val = translate_botanical_text(clean_val(info.get("Native Range")), LANG)
-            props_val = translate_botanical_text(clean_val(info.get("Medicinal Properties")), LANG)
-
-            p_c1, p_c2 = st.columns(2, gap="medium")
-            with p_c1:
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("family")}</div>'
-                    f'<div class="plant-info-value" dir="ltr">{html.escape(fam_val)}</div></div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("range")}</div>'
-                    f'<div class="plant-info-value">{html.escape(range_val)}</div></div>',
-                    unsafe_allow_html=True,
-                )
-            with p_c2:
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("med_rating")} &bull; {tr("edib_rating")}</div>'
-                    f'<div class="plant-info-value" dir="ltr">Medicinal: {html.escape(med_r)} / 5  |  Edibility: {html.escape(edib_r)} / 5</div></div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-info-card">'
-                    f'<div class="plant-info-title">{tr("properties")}</div>'
-                    f'<div class="plant-info-value">{html.escape(props_val[:1800])}</div></div>',
-                    unsafe_allow_html=True,
-                )
-
-            chemicals = st.session_state.chemicals or []
-            if chemicals:
-                st.markdown(
-                    f'<div dir="{page_dir}" class="plant-section-heading">'
-                    f'<span class="section-mark">🧪</span>{html.escape(tr("chemicals"))}</div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f'<div dir="{page_dir}" class="chemical-panel">'
-                    f'<div style="color:#94a3b8;font-size:.86rem;margin-bottom:8px;">{html.escape(tr("chem_note"))}</div>'
-                    + " ".join(f'<span dir="ltr" class="chemical-pill">{html.escape(str(n))}</span>' for n in chemicals)
-                    + '</div>',
-                    unsafe_allow_html=True,
-                )
-
-            st.markdown(
-                f'<div class="feedback-box" dir="{page_dir}">'
-                f'<div style="font-size:1.05rem;font-weight:700;color:#4ade80;margin-bottom:4px;">{tr("evaluate")}</div>'
-                f'<div style="font-size:0.92rem;color:#cbd5e1;">{tr("evaluate_help")}</div>'
+                f'<div dir="{page_dir}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;'
+                f'height:380px;background:rgba(15,23,42,0.55);border:1px dashed rgba(148,163,184,0.25);'
+                f'border-radius:22px;color:#94a3b8;text-align:center;padding:20px;">'
+                f'<div style="font-size:2.8rem;margin-bottom:12px;">🌱</div>'
+                f'<div style="font-size:1.15rem;font-weight:700;color:#e2e8f0;">{tr("ready")}</div>'
+                f'<div style="font-size:0.95rem;margin-top:6px;">{tr("ready_help")}</div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
-            st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
 
-            if not st.session_state.feedback_sent:
-                fc1, fc2 = st.columns(2, gap="medium")
-                with fc1:
-                    if st.button(tr("yes"), width="stretch"):
-                        st.session_state.feedback_sent = "correct"
-                        st.rerun()
-                with fc2:
-                    if st.button(tr("no"), width="stretch", key="wrong_btn_trigger"):
-                        st.session_state.feedback_sent = "wrong"
-                        st.rerun()
-            elif st.session_state.feedback_sent == "correct":
-                st.success(tr("thanks"))
-            elif st.session_state.feedback_sent == "wrong":
-                st.markdown(f'<div dir="{page_dir}"><b>{tr("select_true")}</b></div>', unsafe_allow_html=True)
-                other_candidates = [""] + [sp for sp, _ in top5[1:]]
-                chosen_cand = st.selectbox("Candidates", other_candidates, label_visibility="collapsed")
-                typed_sp = st.text_input(tr("custom_sp"))
-                final_true = typed_sp.strip() if typed_sp.strip() else chosen_cand
-                if final_true and st.button(tr("submit"), width="stretch"):
-                    with st.spinner(tr("saving")):
-                        try:
-                            save_correction_to_github(best_sp, final_true, st.session_state.img_bytes)
-                            st.session_state.feedback_sent = "done"
-                            st.rerun()
-                        except Exception as e:
-                            st.error(tr("save_error") + str(e))
-            elif st.session_state.feedback_sent == "done":
-                st.success(tr("saved"))
+with mode_search_tab:
+    st.markdown(
+        f'<div dir="{page_dir}" class="plant-section-heading">'
+        f'<span class="section-mark">🔎</span>{html.escape(tr("search_header"))}</div>',
+        unsafe_allow_html=True,
+    )
+
+    sc1, sc2 = st.columns([2.4, 1.0], gap="medium")
+    with sc1:
+        search_query = st.text_input(
+            "Search",
+            placeholder=tr("search_placeholder"),
+            key="reverse_search_query",
+            label_visibility="collapsed"
+        )
+    with sc2:
+        scope_opt = st.selectbox(
+            "Scope",
+            [tr("filter_morocco"), tr("filter_all")],
+            index=0,
+            key="reverse_search_scope",
+            label_visibility="collapsed"
+        )
+
+    filtered_df = species_df.copy()
+    if scope_opt == tr("filter_morocco"):
+        m_mask = pd.Series(False, index=filtered_df.index)
+        if "documented_in_morocco_sahara" in filtered_df.columns:
+            m_mask = m_mask | filtered_df["documented_in_morocco_sahara"].fillna(False).astype(bool)
+        if "documented_in_morocco_national_covid" in filtered_df.columns:
+            m_mask = m_mask | filtered_df["documented_in_morocco_national_covid"].fillna(False).astype(bool)
+        filtered_df = filtered_df[m_mask]
+
+    q_clean = search_query.strip().lower()
+    if q_clean:
+        filtered_df = filtered_df[filtered_df["_search_blob"].str.contains(q_clean, regex=False, na=False)]
+
+    if len(filtered_df) == 0:
+        st.info(tr("search_empty"))
     else:
         st.markdown(
-            f'<div dir="{page_dir}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;'
-            f'height:380px;background:rgba(15,23,42,0.55);border:1px dashed rgba(148,163,184,0.25);'
-            f'border-radius:22px;color:#94a3b8;text-align:center;padding:20px;">'
-            f'<div style="font-size:2.8rem;margin-bottom:12px;">🌱</div>'
-            f'<div style="font-size:1.15rem;font-weight:700;color:#e2e8f0;">{tr("ready")}</div>'
-            f'<div style="font-size:0.95rem;margin-top:6px;">{tr("ready_help")}</div>'
-            f'</div>',
+            f'<div dir="{page_dir}" style="font-size:0.9rem;color:#6ee7b7;font-weight:700;margin:8px 0;">'
+            f'{html.escape(tr("search_matches"))} <span dir="ltr">{len(filtered_df)}</span></div>',
             unsafe_allow_html=True,
         )
+
+        # بناء قائمة الاختيار بصيغة واضحة تجمع الاسم العلمي والدارجة المغربية
+        display_options = []
+        label_to_sp = {}
+        for _, row in filtered_df.head(120).iterrows():
+            sp_name = str(row["clean_scientific_name"])
+            v1 = clean_val(row.get("moroccan_vernacular_name"), "")
+            v2 = clean_val(row.get("covid_vernacular"), "")
+            vern = " / ".join(dict.fromkeys([v for v in (v1, v2) if v]))
+            lbl = f"{sp_name}  —  🇲🇦 {vern}" if vern else sp_name
+            display_options.append(lbl)
+            label_to_sp[lbl] = sp_name
+
+        st.markdown(f'<div dir="{page_dir}" style="font-size:0.92rem;color:#cbd5e1;margin-bottom:4px;">{html.escape(tr("search_select"))}</div>', unsafe_allow_html=True)
+        chosen_label = st.selectbox(
+            "Select Species",
+            display_options,
+            key="reverse_search_selected_sp",
+            label_visibility="collapsed"
+        )
+
+        selected_sp = label_to_sp[chosen_label]
+        ref_url_single = get_reference_photo_url(selected_sp)
+        if ref_url_single:
+            _, img_mid, _ = st.columns([1, 1.4, 1])
+            with img_mid:
+                st.markdown(
+                    f'<div class="ref-card">'
+                    f'<img src="{html.escape(ref_url_single)}" style="height:230px;" alt="{html.escape(selected_sp)}"/>'
+                    f'<div class="ref-caption" dir="ltr"><i>{html.escape(selected_sp)}</i> (iNaturalist Reference)</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+        chems_single = get_chemical_compounds(selected_sp)
+        render_full_botanical_profile(selected_sp, None, page_dir, chems_single)
 
 st.markdown(
     f'<div dir="{page_dir}" style="text-align:center;font-size:.85rem;color:#94a3b8;margin-top:40px;'
     f'border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">'
     f'{tr("academic")}<br>'
-    f'{tr("dataset")} • <b>Version 3.0 (Ensemble AI)</b>'
+    f'{tr("dataset")} • <b>Version 4.0 (Ensemble AI + Smart Search + Morocco Map)</b>'
     f'</div>',
     unsafe_allow_html=True,
 )
