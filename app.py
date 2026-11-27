@@ -768,14 +768,13 @@ def load_assets():
     species_df = species_df.drop_duplicates(subset=["clean_scientific_name"]).copy()
     species_lookup = species_df.set_index("clean_scientific_name").to_dict(orient="index")
 
-    # بناء فهرس بحث سريع يشمل الاسم العلمي والشائع والدارجة المغربية والاستعمالات الطبية
     search_cols = [
         "clean_scientific_name", "Common Name", "common_name", "Family",
         "moroccan_vernacular_name", "covid_vernacular",
         "therapeutic_use_morocco", "Medicinal Properties", "Native Range"
     ]
     existing_cols = [c for c in search_cols if c in species_df.columns]
-    ARABIC_MOROCCAN_ALIASES = {
+ARABIC_MOROCCAN_ALIASES = {
     "artemisia absinthium": "الشيبة شيبة chiba absinthe",
     "artemisia arborescens": "الشيبة شيبة chiba",
     "artemisia herba-alba": "الشيح شيح chih",
@@ -827,6 +826,14 @@ def load_assets():
     "allium sativum": "الثومة ثوم touma",
     "allium cepa": "البصلة بصل basla",
 }
+
+def _enrich_search_row(row):
+    base_txt = " | ".join(str(row[c]) for c in existing_cols if pd.notna(row[c])).lower()
+    sci = str(row.get("clean_scientific_name", "")).lower()
+    extra = [v for k, v in ARABIC_MOROCCAN_ALIASES.items() if k in sci]
+    return base_txt + (" | " + " ".join(extra) if extra else "")
+
+species_df["_search_blob"] = species_df.apply(_enrich_search_row, axis=1)
 
 def _enrich_search_row(row):
     base_txt = " | ".join(str(row[c]) for c in existing_cols if pd.notna(row[c])).lower()
