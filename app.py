@@ -754,6 +754,7 @@ def translate_botanical_text(value, target):
         return original
 
 @st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner=False)
 def load_assets():
     base_dir = Path(__file__).resolve().parent
     with open(base_dir / "class_names_1600.json", "r", encoding="utf-8") as f:
@@ -774,67 +775,67 @@ def load_assets():
         "therapeutic_use_morocco", "Medicinal Properties", "Native Range"
     ]
     existing_cols = [c for c in search_cols if c in species_df.columns]
-ARABIC_MOROCCAN_ALIASES = {
-    "artemisia absinthium": "الشيبة شيبة chiba absinthe",
-    "artemisia arborescens": "الشيبة شيبة chiba",
-    "artemisia herba-alba": "الشيح شيح chih",
-    "rosmarinus officinalis": "أزير ازير إكليل الجبل اكليل الجبل azir",
-    "salvia rosmarinus": "أزير ازير إكليل الجبل azir",
-    "mentha pulegium": "فليو fliou",
-    "mentha spicata": "النعناع نعناع naanaa",
-    "mentha piperita": "النعناع الفلفلي نعناع",
-    "thymus": "الزعتر زعتر زعيترة zaatar zaitra",
-    "origanum": "الزعتر زعيترة مرددوش zaatar",
-    "peganum harmala": "الحرمل حرمل harmel",
-    "aloe vera": "الصبار صبار ألوفيرا",
-    "lavandula": "الخزامى خزامى khzama",
-    "salvia officinalis": "السالمية سالمية الميرمية salmiya",
-    "alpinia officinarum": "خنجلان خولنجان khoudenjal",
-    "zingiber officinale": "سكنجبير الزنجبيل زنجبيل skenjbir",
-    "curcuma longa": "الخرقوم خرقوم كركم kherkoum",
-    "cinnamomum": "القرفة قرفة karfa",
-    "syzygium aromaticum": "القرنفل قرنفل عود النوار qronfel",
-    "trigonella foenum-graecum": "الحلبة حلبة helba",
-    "nigella sativa": "السانوج الحبة السوداء حبة البركة sanouj",
-    "linum usitatissimum": "زريعة الكتان كتان zriat lktan",
-    "lepidium sativum": "حب الرشاد رشاد hab rchad",
-    "foeniculum vulgare": "النافع نافع البسباس nafaa",
-    "pimpinella anisum": "حبة حلاوة ينسون habbat hlawa",
-    "cuminum cyminum": "الكمون كمون kamoun",
-    "coriandrum sativum": "القزبر قزبر kosbor",
-    "petroselinum crispum": "المعدنوس معدنوس maadnous",
-    "ocimum basilicum": "الحبق حبق ريحان hbaq",
-    "matricaria chamomilla": "البابونج بابونج babounj",
-    "verbena officinalis": "اللويزة لويزة lwiza",
-    "aloysia citrodora": "اللويزة لويزة lwiza",
-    "juniperus": "العرعار عرعار araar",
-    "capparis spinosa": "الكبار كبار kabbar",
-    "euphorbia": "الدغموس دغموس daghmous",
-    "ziziphus lotus": "السدرة النبق سدر sedra",
-    "argania spinosa": "أركان اركان أرغان argan",
-    "olea europaea": "الزيتون زيتون zitoun",
-    "punica granatum": "الرمان رمان romman",
-    "ficus carica": "الكرموس التين تين karmos",
-    "urtica dioica": "الحريكة حريكة القراص harriga",
-    "malva": "البقولة الخبيزة خبيزة bakoula",
-    "portulaca oleracea": "الرجلة رجلة rejla",
-    "laurus nobilis": "ورقة سيدنا موسى الرند rand",
-    "myrtus communis": "الريحان ريحان rihan",
-    "pistacia lentiscus": "الضرو ضرو drou",
-    "ceratonia siliqua": "الخروب خروب kharroub",
-    "opuntia ficus-indica": "الهندية الصبار هندية hendiya",
-    "allium sativum": "الثومة ثوم touma",
-    "allium cepa": "البصلة بصل basla",
-}
 
-def _enrich_search_row(row):
-    base_txt = " | ".join(str(row[c]) for c in existing_cols if pd.notna(row[c])).lower()
-    sci = str(row.get("clean_scientific_name", "")).lower()
-    extra = [v for k, v in ARABIC_MOROCCAN_ALIASES.items() if k in sci]
-    return base_txt + (" | " + " ".join(extra) if extra else "")
+    ARABIC_MOROCCAN_ALIASES = {
+        "artemisia absinthium": "الشيبة شيبة chiba absinthe",
+        "artemisia arborescens": "الشيبة شيبة chiba",
+        "artemisia herba-alba": "الشيح شيح chih",
+        "rosmarinus officinalis": "أزير ازير إكليل الجبل اكليل الجبل azir",
+        "salvia rosmarinus": "أزير ازير إكليل الجبل azir",
+        "mentha pulegium": "فليو fliou",
+        "mentha spicata": "النعناع نعناع naanaa",
+        "mentha piperita": "النعناع الفلفلي نعناع",
+        "thymus": "الزعتر زعتر زعيترة zaatar zaitra",
+        "origanum": "الزعتر زعيترة مرددوش zaatar",
+        "peganum harmala": "الحرمل حرمل harmel",
+        "aloe vera": "الصبار صبار ألوفيرا",
+        "lavandula": "الخزامى خزامى khzama",
+        "salvia officinalis": "السالمية سالمية الميرمية salmiya",
+        "alpinia officinarum": "خنجلان خولنجان khoudenjal",
+        "zingiber officinale": "سكنجبير الزنجبيل زنجبيل skenjbir",
+        "curcuma longa": "الخرقوم خرقوم كركم kherkoum",
+        "cinnamomum": "القرفة قرفة karfa",
+        "syzygium aromaticum": "القرنفل قرنفل عود النوار qronfel",
+        "trigonella foenum-graecum": "الحلبة حلبة helba",
+        "nigella sativa": "السانوج الحبة السوداء حبة البركة sanouj",
+        "linum usitatissimum": "زريعة الكتان كتان zriat lktan",
+        "lepidium sativum": "حب الرشاد رشاد hab rchad",
+        "foeniculum vulgare": "النافع نافع البسباس nafaa",
+        "pimpinella anisum": "حبة حلاوة ينسون habbat hlawa",
+        "cuminum cyminum": "الكمون كمون kamoun",
+        "coriandrum sativum": "القزبر قزبر kosbor",
+        "petroselinum crispum": "المعدنوس معدنوس maadnous",
+        "ocimum basilicum": "الحبق حبق ريحان hbaq",
+        "matricaria chamomilla": "البابونج بابونج babounj",
+        "verbena officinalis": "اللويزة لويزة lwiza",
+        "aloysia citrodora": "اللويزة لويزة lwiza",
+        "juniperus": "العرعار عرعار araar",
+        "capparis spinosa": "الكبار كبار kabbar",
+        "euphorbia": "الدغموس دغموس daghmous",
+        "ziziphus lotus": "السدرة النبق سدر sedra",
+        "argania spinosa": "أركان اركان أرغان argan",
+        "olea europaea": "الزيتون زيتون zitoun",
+        "punica granatum": "الرمان رمان romman",
+        "ficus carica": "الكرموس التين تين karmos",
+        "urtica dioica": "الحريكة حريكة القراص harriga",
+        "malva": "البقولة الخبيزة خبيزة bakoula",
+        "portulaca oleracea": "الرجلة رجلة rejla",
+        "laurus nobilis": "ورقة سيدنا موسى الرند rand",
+        "myrtus communis": "الريحان ريحان rihan",
+        "pistacia lentiscus": "الضرو ضرو drou",
+        "ceratonia siliqua": "الخروب خروب kharroub",
+        "opuntia ficus-indica": "الهندية الصبار هندية hendiya",
+        "allium sativum": "الثومة ثوم touma",
+        "allium cepa": "البصلة بصل basla",
+    }
 
-species_df["_search_blob"] = species_df.apply(_enrich_search_row, axis=1)
+    def _enrich_search_row(row):
+        base_txt = " | ".join(str(row[c]) for c in existing_cols if pd.notna(row[c])).lower()
+        sci = str(row.get("clean_scientific_name", "")).lower()
+        extra = [v for k, v in ARABIC_MOROCCAN_ALIASES.items() if k in sci]
+        return base_txt + (" | " + " ".join(extra) if extra else "")
 
+    species_df["_search_blob"] = species_df.apply(_enrich_search_row, axis=1)
 
     ref_urls = {}
     ref_file = base_dir / "reference_urls_1600.json"
@@ -864,8 +865,6 @@ species_df["_search_blob"] = species_df.apply(_enrich_search_row, axis=1)
         grad_model = None
 
     return model_mob, model_eff, all_species, species_df, species_lookup, ref_urls, grad_model
-
-model_1600, model_effnet, all_species, species_df, species_lookup, ref_urls_map, gradcam_backbone = load_assets()
 
 def clean_val(val, default="—"):
     if val is None or (isinstance(val, float) and np.isnan(val)):
