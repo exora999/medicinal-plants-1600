@@ -835,13 +835,6 @@ def _enrich_search_row(row):
 
 species_df["_search_blob"] = species_df.apply(_enrich_search_row, axis=1)
 
-def _enrich_search_row(row):
-    base_txt = " | ".join(str(row[c]) for c in existing_cols if pd.notna(row[c])).lower()
-    sci = str(row.get("clean_scientific_name", "")).lower()
-    extra = [v for k, v in ARABIC_MOROCCAN_ALIASES.items() if k in sci]
-    return base_txt + (" | " + " ".join(extra) if extra else "")
-
-species_df["_search_blob"] = species_df.apply(_enrich_search_row, axis=1)
 
     ref_urls = {}
     ref_file = base_dir / "reference_urls_1600.json"
