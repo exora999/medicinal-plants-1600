@@ -754,7 +754,6 @@ def translate_botanical_text(value, target):
         return original
 
 @st.cache_resource(show_spinner=False)
-@st.cache_resource(show_spinner=False)
 def load_assets():
     base_dir = Path(__file__).resolve().parent
     with open(base_dir / "class_names_1600.json", "r", encoding="utf-8") as f:
