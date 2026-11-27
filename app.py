@@ -1,3 +1,4 @@
+
 import json
 import urllib.request
 import urllib.parse
@@ -29,8 +30,8 @@ LANGUAGES = {
 TEXT = {
     "en": {
         "hero": "Medicinal Plant Classifier",
-        "subtitle": "Deep learning botanical identification & Moroccan ethnobotany — powered by <b>1,600-Species AI</b>",
-        "badge_info": "🔬 1,600 Species &bull; Grad-CAM Explainable AI &bull; PFAF &bull; PubChem",
+        "subtitle": "Dual-Model Ensemble AI (MobileNetV2 + EfficientNetV2) & Moroccan ethnobotany — <b>1,600 Species</b>",
+        "badge_info": "🔬 1,600 Species &bull; Weighted Ensemble AI &bull; Grad-CAM &bull; PFAF &bull; PubChem",
         "input": "📸 Input Plant Image",
         "upload_tab": "📁 Upload File",
         "camera_tab": "📷 Take Photo",
@@ -39,12 +40,12 @@ TEXT = {
         "ready_img": "✅ Image Ready",
         "analyse": "📊  |  Analyse Plant  ➔",
         "upload_first": "Please upload or capture a plant photo first.",
-        "running": "🌿 Analysing plant & generating Grad-CAM heatmap...",
+        "running": "🌿 Running Dual-Model Ensemble & generating Grad-CAM...",
         "fetching": "🧪 Retrieving chemical compounds from PubChem...",
         "ood_title": "⚠️ Low Confidence / Out-of-Distribution Image Detected",
         "ood_body": "This image does not clearly match any of the 1,600 trained plant species (it may be a non-plant object, a blurry photo, or an unindexed species). Try uploading a clearer close-up of the leaves or flowers.",
         "ood_override": "👁️ Show Closest Species Match Anyway",
-        "top5_title": "🎯 Top 5 Predicted Species",
+        "top5_title": "🎯 Top 5 Predicted Species (Dual-Model Ensemble)",
         "gradcam_title": "🔍 AI Visual Attention (Grad-CAM Explainability)",
         "gradcam_orig": "Original Input",
         "gradcam_heat": "Model Focus Heatmap (Leaves / Flowers)",
@@ -54,7 +55,7 @@ TEXT = {
         "scientific": "Scientific Name",
         "common": "Common Name",
         "vernacular": "🇲🇦 Moroccan Vernacular",
-        "confidence": "Top-1 Confidence",
+        "confidence": "Ensemble Top-1 Confidence",
         "plant_info": "Botanical & Medicinal Profile (PFAF)",
         "family": "🌱 Family",
         "med_rating": "⭐ Medicinal Rating (0–5)",
@@ -70,7 +71,7 @@ TEXT = {
         "chemicals": "Chemical Compounds (PubChem)",
         "chem_note": "Chemical compound names are kept in their standard scientific form.",
         "evaluate": "🎯 Evaluate Model Prediction",
-        "evaluate_help": "Is the <b>1,600-Species Model's</b> top prediction accurate for this plant?",
+        "evaluate_help": "Is the <b>1,600-Species Ensemble's</b> top prediction accurate for this plant?",
         "yes": "✅ Yes, Prediction is Correct",
         "no": "❌ No, Prediction is Wrong",
         "thanks": "Thank you for validating the model's prediction! 🎉",
@@ -83,12 +84,12 @@ TEXT = {
         "ready": "Ready to Analyse",
         "ready_help": "Upload or capture a plant photo and click <b>Analyse Plant</b>",
         "academic": "⚠️ <b>Academic & Educational Project</b> — Do NOT use this tool for medical diagnosis or consumption decisions.",
-        "dataset": "Database: 1,600 Species • 73,998 Images (iNaturalist + PFAF + Moroccan Studies)"
+        "dataset": "Database: 1,600 Species • 73,948 Images (iNaturalist + PFAF + Moroccan Studies)"
     },
     "fr": {
         "hero": "Classificateur de Plantes Médicinales",
-        "subtitle": "Identification botanique par Deep Learning & ethnobotanique marocaine — propulsé par <b>IA 1 600 Espèces</b>",
-        "badge_info": "🔬 1 600 Espèces &bull; IA Explicable Grad-CAM &bull; PFAF &bull; PubChem",
+        "subtitle": "Ensemble IA Double Modèle (MobileNetV2 + EfficientNetV2) & ethnobotanique marocaine — <b>1 600 Espèces</b>",
+        "badge_info": "🔬 1 600 Espèces &bull; IA Ensemble Pondéré &bull; Grad-CAM &bull; PFAF &bull; PubChem",
         "input": "📸 Image de la plante",
         "upload_tab": "📁 Importer un fichier",
         "camera_tab": "📷 Prendre une photo",
@@ -97,12 +98,12 @@ TEXT = {
         "ready_img": "✅ Image prête",
         "analyse": "📊  |  Analyser la plante  ➔",
         "upload_first": "Veuillez importer ou prendre une photo d’une plante.",
-        "running": "🌿 Analyse et génération de la carte Grad-CAM...",
+        "running": "🌿 Analyse par ensemble double modèle et carte Grad-CAM...",
         "fetching": "🧪 Récupération des composés chimiques (PubChem)...",
         "ood_title": "⚠️ Image hors distribution / Confiance trop faible",
         "ood_body": "Cette image ne correspond clairement à aucune des 1 600 espèces entraînées (objet non végétal, photo floue ou espèce absente de la base). Essayez une photo nette des feuilles ou fleurs.",
         "ood_override": "👁️ Afficher quand même l’espèce la plus proche",
-        "top5_title": "🎯 Top 5 des espèces prédites",
+        "top5_title": "🎯 Top 5 des espèces prédites (Ensemble Double Modèle)",
         "gradcam_title": "🔍 Attention visuelle de l’IA (Grad-CAM)",
         "gradcam_orig": "Image d’origine",
         "gradcam_heat": "Zones de décision (Feuilles / Fleurs)",
@@ -112,7 +113,7 @@ TEXT = {
         "scientific": "Nom scientifique",
         "common": "Nom commun",
         "vernacular": "🇲🇦 Nom vernaculaire marocain",
-        "confidence": "Confiance Top-1",
+        "confidence": "Confiance Ensemble Top-1",
         "plant_info": "Profil botanique et médicinal (PFAF)",
         "family": "🌱 Famille",
         "med_rating": "⭐ Note médicinale (0–5)",
@@ -128,7 +129,7 @@ TEXT = {
         "chemicals": "Composés chimiques (PubChem)",
         "chem_note": "Les noms des composés chimiques sont conservés sous leur forme scientifique normalisée.",
         "evaluate": "🎯 Évaluer la prédiction du modèle",
-        "evaluate_help": "La prédiction principale du <b>Modèle 1 600 Espèces</b> est-elle correcte ?",
+        "evaluate_help": "La prédiction principale de l’<b>Ensemble 1 600 Espèces</b> est-elle correcte ?",
         "yes": "✅ Oui, la prédiction est correcte",
         "no": "❌ Non, la prédiction est incorrecte",
         "thanks": "Merci d’avoir validé la prédiction du modèle ! 🎉",
@@ -141,12 +142,12 @@ TEXT = {
         "ready": "Prêt à analyser",
         "ready_help": "Importez une photo de plante puis cliquez sur <b>Analyser la plante</b>",
         "academic": "⚠️ <b>Projet académique et éducatif</b> — N’utilisez PAS cet outil pour un diagnostic médical ou une décision de consommation.",
-        "dataset": "Base de données : 1 600 Espèces • 73 998 Images (iNaturalist + PFAF + Études Marocaines)"
+        "dataset": "Base de données : 1 600 Espèces • 73 948 Images (iNaturalist + PFAF + Études Marocaines)"
     },
     "ar": {
         "hero": "نظام التعرّف على النباتات الطبية",
-        "subtitle": "تصنيف النباتات بالتعلم العميق والسياق الإثنوبوتاني المغربي — مدعوم بنموذج <b>1,600 نوع نباتي</b>",
-        "badge_info": "🔬 1,600 نوع &bull; تفسير القرار Grad-CAM &bull; PFAF &bull; PubChem",
+        "subtitle": "الذكاء الاصطناعي التجميعي المزدوج (MobileNetV2 + EfficientNetV2) والسياق المغربي — <b>1,600 نوع نباتي</b>",
+        "badge_info": "🔬 1,600 نوع &bull; دمج نموذجين Ensemble &bull; Grad-CAM &bull; PFAF &bull; PubChem",
         "input": "📸 صورة النبتة",
         "upload_tab": "📁 رفع ملف",
         "camera_tab": "📷 التقاط صورة",
@@ -155,12 +156,12 @@ TEXT = {
         "ready_img": "✅ الصورة جاهزة",
         "analyse": "📊  |  تحليل النبتة  ➔",
         "upload_first": "يرجى رفع صورة النبتة أو التقاطها أولاً.",
-        "running": "🌿 جارٍ تحليل النبتة وتوليد خريطة تركيز النموذج (Grad-CAM)...",
+        "running": "🌿 جارٍ تحليل النبتة عبر النموذجين المدمجين وتوليد خريطة Grad-CAM...",
         "fetching": "🧪 جارٍ جلب المركبات الكيميائية من PubChem...",
         "ood_title": "⚠️ تنبيه: الصورة خارج النطاق أو غير واضحة",
         "ood_body": "هذه الصورة لا تطابق بشكل موثوق أياً من الأنواع الـ 1,600 المدرَّبة (قد تكون جسماً غير نباتي، أو صورة مشوشة، أو نوعاً غير مدرج في قاعدة البيانات). يُرجى رفع صورة أوضح للأوراق أو الأزهار.",
         "ood_override": "👁️ عرض أقرب تخمين على أي حال",
-        "top5_title": "🎯 أكثر 5 أنواع متوقعة",
+        "top5_title": "🎯 أكثر 5 أنواع متوقعة (دمج النموذجين Ensemble)",
         "gradcam_title": "🔍 تفسير قرار الذكاء الاصطناعي (خريطة تركيز Grad-CAM)",
         "gradcam_orig": "الصورة الأصلية",
         "gradcam_heat": "مناطق تركيز النموذج (الأوراق / الأزهار)",
@@ -170,7 +171,7 @@ TEXT = {
         "scientific": "الاسم العلمي",
         "common": "الاسم الشائع",
         "vernacular": "🇲🇦 الاسم بالدارجة المغربية",
-        "confidence": "نسبة ثقة التعرف",
+        "confidence": "نسبة ثقة التعرف المدمجة",
         "plant_info": "الملف النباتي والطبي (PFAF)",
         "family": "🌱 العائلة النباتية",
         "med_rating": "⭐ التقييم الطبي (0–5)",
@@ -186,7 +187,7 @@ TEXT = {
         "chemicals": "المركبات الكيميائية الفعّالة (PubChem)",
         "chem_note": "تُترك أسماء المركبات الكيميائية بصيغتها العلمية القياسية حفاظاً على دقتها.",
         "evaluate": "🎯 تقييم دقة النموذج",
-        "evaluate_help": "هل التوقع الأول لنموذج <b>1,600 نوع</b> صحيح لهذه النبتة؟",
+        "evaluate_help": "هل التوقع الأول للنظام المدمج <b>1,600 نوع</b> صحيح لهذه النبتة؟",
         "yes": "✅ نعم، التوقع صحيح",
         "no": "❌ لا، التوقع غير صحيح",
         "thanks": "شكراً لتأكيد نتيجة النموذج! 🎉",
@@ -199,7 +200,7 @@ TEXT = {
         "ready": "جاهز للتحليل",
         "ready_help": "ارفع صورة النبتة من الجهة الجانبية ثم اضغط على <b>تحليل النبتة</b>",
         "academic": "⚠️ <b>مشروع أكاديمي وتعليمي</b> — لا تستخدم هذه الأداة للتشخيص الطبي أو لاتخاذ قرارات الاستهلاك.",
-        "dataset": "قاعدة البيانات: 1,600 نوع • 73,998 صورة (iNaturalist + PFAF + الدراسات المغربية)"
+        "dataset": "قاعدة البيانات: 1,600 نوع • 73,948 صورة (iNaturalist + PFAF + الدراسات المغربية)"
     }
 }
 
@@ -703,7 +704,7 @@ st.markdown("""
 top_left, top_right = st.columns([3.1, 1.1])
 with top_left:
     st.markdown(
-        '<div class="top-lang-badge">🌿 AI Phytotherapy &bull; 1,600 Species &bull; Grad-CAM &bull; PFAF &bull; PubChem</div>',
+        '<div class="top-lang-badge">🌿 Dual-Model Ensemble AI &bull; 1,600 Species &bull; Grad-CAM &bull; PFAF &bull; PubChem</div>',
         unsafe_allow_html=True
     )
 with top_right:
@@ -776,7 +777,10 @@ def load_assets():
     with open(base_dir / "class_names_1600.json", "r", encoding="utf-8") as f:
         all_species = json.load(f)
 
-    model = tf.keras.models.load_model(str(base_dir / "best_species_1600_inference.keras"), compile=False)
+    model_mob = tf.keras.models.load_model(str(base_dir / "best_species_1600_inference.keras"), compile=False)
+
+    eff_path = base_dir / "best_effnetv2_1600_inference.keras"
+    model_eff = tf.keras.models.load_model(str(eff_path), compile=False) if eff_path.exists() else None
 
     species_df = pd.read_csv(base_dir / "species_info.csv")
     species_lookup = species_df.drop_duplicates(subset=["clean_scientific_name"]).set_index("clean_scientific_name").to_dict(orient="index")
@@ -790,7 +794,7 @@ def load_assets():
     grad_model = None
     try:
         backbone = None
-        for layer in model.layers:
+        for layer in model_mob.layers:
             if isinstance(layer, tf.keras.Model) and "mobilenet" in layer.name.lower():
                 backbone = layer
                 break
@@ -808,9 +812,9 @@ def load_assets():
     except Exception:
         grad_model = None
 
-    return model, all_species, species_lookup, ref_urls, grad_model
+    return model_mob, model_eff, all_species, species_lookup, ref_urls, grad_model
 
-model_1600, all_species, species_lookup, ref_urls_map, gradcam_backbone = load_assets()
+model_1600, model_effnet, all_species, species_lookup, ref_urls_map, gradcam_backbone = load_assets()
 
 def generate_gradcam_overlay(img: Image.Image, top_class_idx: int):
     try:
@@ -873,15 +877,32 @@ def get_reference_photo_url(scientific_name: str):
         pass
     return ""
 
-def predict_top5_with_ood(img: Image.Image):
-    img_orig = img.convert("RGB").resize((192, 192))
-    img_flip = ImageOps.mirror(img_orig)
-    batch = np.stack([
-        preprocess_input(np.array(img_orig, dtype=np.float32)),
-        preprocess_input(np.array(img_flip, dtype=np.float32)),
+def predict_top5_ensemble(img: Image.Image):
+    rgb = img.convert("RGB")
+
+    # 1. MobileNetV2 (192x192 + TTA)
+    img_192 = rgb.resize((192, 192))
+    flip_192 = ImageOps.mirror(img_192)
+    batch_192 = np.stack([
+        preprocess_input(np.array(img_192, dtype=np.float32)),
+        preprocess_input(np.array(flip_192, dtype=np.float32)),
     ], axis=0)
-    preds = model_1600.predict(batch, verbose=0)
-    probs = np.mean(preds, axis=0)
+    probs_mob = np.mean(model_1600.predict(batch_192, verbose=0), axis=0)
+
+    # 2. EfficientNetV2-B0 (224x224 + TTA)
+    if model_effnet is not None:
+        img_224 = rgb.resize((224, 224))
+        flip_224 = ImageOps.mirror(img_224)
+        batch_224 = np.stack([
+            np.array(img_224, dtype=np.float32),
+            np.array(flip_224, dtype=np.float32),
+        ], axis=0)
+        probs_eff = np.mean(model_effnet.predict(batch_224, verbose=0), axis=0)
+        # التجميع الموزون المثالي (0.70 MobileNetV2 + 0.30 EfficientNetV2-B0)
+        probs = 0.70 * probs_mob + 0.30 * probs_eff
+    else:
+        probs = probs_mob
+
     top5_idx = np.argsort(probs)[::-1][:5]
     top5 = [(all_species[i], float(probs[i])) for i in top5_idx]
 
@@ -889,7 +910,7 @@ def predict_top5_with_ood(img: Image.Image):
     entropy = -float(np.sum(probs * np.log(probs + eps)))
     norm_entropy = entropy / float(np.log(len(probs)))
     max_prob = float(probs[top5_idx[0]])
-    is_ood = (max_prob < 0.15) or (norm_entropy > 0.78 and max_prob < 0.25)
+    is_ood = (max_prob < 0.14) or (norm_entropy > 0.79 and max_prob < 0.24)
 
     return top5, int(top5_idx[0]), is_ood, max_prob, norm_entropy
 
@@ -928,7 +949,7 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     repo = st.secrets.get("GITHUB_REPO", "")
     if not token or not repo:
         return
-    img = Image.open(_io.BytesIO(img_bytes)).convert("RGB").resize((192, 192))
+    img = Image.open(_io.BytesIO(img_bytes)).convert("RGB").resize((224, 224))
     buf = _io.BytesIO()
     img.save(buf, format="JPEG", quality=85)
     b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
@@ -936,7 +957,7 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
     req = urllib.request.Request(
         f"https://api.github.com/repos/{repo}/contents/{fname}",
         data=json.dumps({
-            "message": f"correction (1600 Model): {wrong} -> {correct}",
+            "message": f"correction (1600 Ensemble): {wrong} -> {correct}",
             "content": b64
         }).encode(),
         method="PUT",
@@ -953,14 +974,14 @@ def save_correction_to_github(wrong: str, correct: str, img_bytes: bytes):
         img_url = None
 
     body = (
-        f"**Model Prediction:** {wrong}\n\n"
+        f"**Ensemble Prediction:** {wrong}\n\n"
         f"**User Correct Label:** {correct}\n\n"
         + (f"[📷 Plant Image]({img_url})\n\n" if img_url else "")
     )
     req2 = urllib.request.Request(
         f"https://api.github.com/repos/{repo}/issues",
         data=json.dumps({
-            "title": f"1600 Model Correction: {wrong} -> {correct}",
+            "title": f"1600 Ensemble Correction: {wrong} -> {correct}",
             "body": body,
             "labels": ["correction"]
         }).encode(),
@@ -1028,7 +1049,7 @@ with col_input:
             st.session_state.img_bytes = buf.getvalue()
 
             with st.spinner(tr("running")):
-                top5, top1_idx, is_ood, max_prob, norm_entropy = predict_top5_with_ood(image)
+                top5, top1_idx, is_ood, max_prob, norm_entropy = predict_top5_ensemble(image)
                 st.session_state.top5 = top5
                 st.session_state.is_ood = is_ood
                 st.session_state.ood_override = False
@@ -1352,7 +1373,7 @@ st.markdown(
     f'<div dir="{page_dir}" style="text-align:center;font-size:.85rem;color:#94a3b8;margin-top:40px;'
     f'border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">'
     f'{tr("academic")}<br>'
-    f'{tr("dataset")} • <b>Version 2.1</b>'
+    f'{tr("dataset")} • <b>Version 3.0 (Ensemble AI)</b>'
     f'</div>',
     unsafe_allow_html=True,
 )
